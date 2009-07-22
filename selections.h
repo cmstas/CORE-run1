@@ -32,6 +32,9 @@ bool met1(int index, const class TVector3& corr);
 bool sumEt10(double sumEt);
 bool sumEt1(double sumEt);
 
+bool isChargeFlip(int elIndex);
+bool conversionElectron(int electron);
+
 int numberOfExtraMuons(int i_hyp, bool nonisolated);
 bool passMuonBVeto_1_6 (int i_dilep, bool soft_nonisolated);
 
@@ -162,6 +165,9 @@ std::vector <ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > getCalo
 std::vector <ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > > getJPTJets(int i_hyp); 
 int ttbarconstituents(int i_hyp);
 bool additionalZvetoSUSY09(int i_hyp);
+
+bool isFakeableElSUSY09(int iEl);
+bool isFakeableMuSUSY09(int iMu);
 
 
 //TTDil08 fake rate functions
