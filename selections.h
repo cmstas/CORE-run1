@@ -114,6 +114,7 @@ std::vector<LorentzVector> JPTs(int i_hyp, double etThreshold);
 unsigned int nJPTs(int i_hyp, double etThreshod);
 unsigned int nJPTs(int i_hyp); // with default threshold = 20
 // bool passCaloTrkjetCombo ();
+bool isGoodDilHypJet(unsigned int jetIdx, unsigned int hypIdx, double ptCut, double absEtaCut, double dRCut, bool muJetClean);
 
 double mu_rel_iso (int index);
 double el_rel_iso (int index, bool use_calo_iso);
@@ -147,6 +148,9 @@ bool metSimple (float threshold, const TVector3& corr);
 bool metBalance (int i_hyp, const TVector3& corr);
 bool metProjected (int i_hyp, const TVector3& corr);
 bool pass5Met (int i_hyp, const TVector3& corr);
+bool passMet_OF20_SF30(int hypIdx, bool useTcMet);
+double met_pat_metCor_hyp(unsigned int hypIdx);
+
 //
 
 
@@ -205,7 +209,7 @@ bool comparePt(const LorentzVector &lv1,
 	       const LorentzVector &lv2);
 bool GoodSusyElectronWithoutIsolation(int index);
 bool GoodSusyElectronWithoutIsolationNoD0(int index);
-bool GoodSusyElectronWithIsolationLoose(int index, bool use_calo_iso); 
+//bool GoodSusyElectronWithIsolationLoose(int index, bool use_calo_iso); 
 bool PassSusyElectronIsolationLoose(int index, bool use_calo_iso);
 bool GoodSusyMuonWithIsolation(int index); 
 bool GoodSusyMuonWithoutIsolation(int index);
@@ -224,17 +228,6 @@ int numberOfExtraMuonsSUSY(int i_hyp);
 std::vector<LorentzVector> getCaloJets(int i_hyp); 
 std::vector<LorentzVector> getJPTJets(int i_hyp); 
 int ttbarconstituents(int i_hyp);
-<<<<<<< selections.h
-bool additionalZvetoSUSY09(int i_hyp);
-bool PassSusyElectronIsolationLoose(int index, bool use_calo_iso);
-bool PassSusyElectronIsolation(int index, bool use_calo_iso);
-
-// Fake rate
-bool isFakeableElSUSY09(int iEl);
-bool isNumElSUSY09(int iEl);
-bool isFakeableMuSUSY09(int iMu);
-bool isNumMuSUSY09(int iMu);
-=======
 bool additionalZvetoSUSY09(int i_hyp);
 bool idIsBeauty(int id);
 bool idIsCharm(int id);
@@ -243,7 +236,6 @@ bool isFakeableElSUSY09(int iEl);
 bool isFakeableMuSUSY09(int iMu);
 bool isNumElSUSY09(int iEl);
 bool isNumMuSUSY09(int iMu);
->>>>>>> 1.37
 
 //TTDil08 fake rate functions
 bool isNumElTTDil08(int iEl);

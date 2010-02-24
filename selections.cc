@@ -1273,7 +1273,7 @@ bool passCaloTrkjetCombo ()
 	       if (dr < min_dr) {
 		    min_dr = dr;
 		    sumpt = cms2.trkjets_p4()[j].pt() + 
-			 cms2.jets_p4()[i].pt() * cms2.jets_tq_noCorrF()[i];
+		    cms2.jets_p4()[i].pt();// * cms2.je;
 	       }
 	  }
 	  if (sumpt > max_sumpt) {
@@ -1666,6 +1666,32 @@ bool looseElectronSelectionNoIsoTTDil08(int index) {
   return true;
 }
 
+//return the index of a matching muon in cone dR, with muon type mask msk
+int els_closestMuonWQual(int index, float dRMax, int msk){
+  int resMatch = -1;
+  unsigned int nMus = cms2.mus_type().size();
+  float dR = 9999.;
+  for (unsigned int iMu = 0; iMu < nMus; ++iMu){
+    if ((cms2.mus_type()[iMu] & msk)==msk){
+      float muDr = TMath::Abs(ROOT::Math::VectorUtil::DeltaR(cms2.els_p4()[index],cms2.mus_p4()[iMu]));
+      if (muDr < dR && muDr < dRMax){ dR = muDr; resMatch = iMu; }
+    }
+  }
+  return resMatch;
+}
+
+// as befor, only making additional quality on the overlapping muon
+// used in October 09 TOPANA exercise
+bool looseElectronSelectionNoIsoTTDilOcX09(int index) {
+  if ( ! electron20Eta2p4(index) ) return false;
+  if ( cms2.els_egamma_looseId()[index]     !=  1) return false;
+  if ( fabs(cms2.els_d0corr()[index]) > 0.040)   return false;
+  if ( els_closestMuonWQual(index, 0.1, 2) != -1) return false; 
+
+  return true;
+}
+
+
 //
 double electronTrkIsolationPAT(int index){ 
   double sum = cms2.els_pat_trackIso().at(index); 
@@ -1899,81 +1925,16 @@ int numberOfExtraElectronsVJets09(int i_hyp){
 //------------------------------------------------------------------------------------
 // SUSY dilepton cuts 09 for TAS
 
-<<<<<<< selections.cc
-bool compareEt(ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > lv1, 
-                 ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > lv2) {
-  return lv1.pt() > lv2.pt();
-=======
 bool comparePt (const LorentzVector &lv1, 
 		const LorentzVector &lv2) 
 {
      return lv1.pt() > lv2.pt();
->>>>>>> 1.71
 }
 
-<<<<<<< selections.cc
-// Fakeble Objects
-
-bool isFakeableElSUSY09(int iEl){
-  
-  Double_t pt = cms2.els_p4()[iEl].Pt();
-  Double_t eta = cms2.els_p4()[iEl].Eta();
-  
-  if( pt < 10)  return false;
-  if( fabs( eta ) > 2.4 )  return false;
-  //reject if electron is close to muon;
-  if ( cms2.els_closestMuon()[iEl] > -1)  return false;
-  // Isolation
-  if  (inv_el_relsusy_iso(iEl, true) > 0.4) return false;
-  return true;
-}
-
-bool isNumElSUSY09(int iEl) {
-  
-  Double_t pt = cms2.els_p4()[iEl].Pt();
-  Double_t eta = cms2.els_p4()[iEl].Eta();
-  if( pt < 10) return false;
-  if( fabs( eta ) > 2.4 ) return false;
-  if (! GoodSusyElectronWithoutIsolation(iEl)) return false; 
-  if (! GoodSusyElectronWithIsolation(iEl, true)) return false;
-  return true;
-}
-
-bool isFakeableMuSUSY09(int iMu) {
-
-  Double_t pt = cms2.mus_p4()[iMu].Pt();
-  Double_t eta = cms2.mus_p4()[iMu].Eta();
-  
-  //only globalMuons
-  if(!(2 & cms2.mus_type()[iMu])) return false;
-  if( pt < 10)  return false;
-  if( fabs( eta ) > 2.4 ) return false;
-  //  if( cms2.mus_gfit_chi2()[iMu]/cms2.mus_gfit_ndof()[iMu] > 20) return false;
-  if (inv_mu_relsusy_iso(iMu) > 0.4 ) return false;
-  return true;
-}
-
-bool isNumMuSUSY09(int iMu) {
-
-  Double_t pt = cms2.mus_p4()[iMu].Pt();
-  Double_t eta = cms2.mus_p4()[iMu].Eta();
-  
-  if (pt < 10)  return false; 
-  if (fabs( eta ) > 2.4 ) return false; 
-  if (!GoodSusyMuonWithoutIsolation(iMu)) return false;
-  if (!GoodSusyMuonWithIsolation(iMu)) return false;
-  return true;
-}
-
-=======
->>>>>>> 1.71
 bool GoodSusyElectronWithoutIsolation(int index) { 
   if ( cms2.els_egamma_tightId().at(index)     !=  1) return false; 
   if ( fabs(cms2.els_d0corr().at(index)) >= 0.02)   return false; 
   if ( cms2.els_closestMuon().at(index) != -1) return false; 
-<<<<<<< selections.cc
-  if ( TMath::Abs(cms2.els_p4()[index].eta()) > 2.4) return false;
-=======
   if ( TMath::Abs(cms2.els_p4()[index].eta()) > 2.4) return false;
 // New
 //  if ( conversionElectron(index)) return false;
@@ -1986,7 +1947,6 @@ bool GoodSusyElectronWithoutIsolationNoD0(int index) {
   if ( cms2.els_egamma_tightId().at(index)     !=  1) return false; 
   if ( cms2.els_closestMuon().at(index) != -1) return false; 
   if ( TMath::Abs(cms2.els_p4()[index].eta()) > 2.4) return false;
->>>>>>> 1.71
   return true; 
 } 
  
@@ -2074,28 +2034,12 @@ bool GoodSusyLeptonWithIsolation(int id, int index){
   return false;
 }
 
-<<<<<<< selections.cc
-bool PassSusyElectronIsolationLoose(int index, bool use_calo_iso)
-{
-  const double cut = 0.4; 
-  return inv_el_relsusy_iso(index, use_calo_iso) < cut;
-}
-
-bool PassSusyElectronIsolation(int index, bool use_calo_iso)
-{
-  const double cut = 0.1;
-  return inv_el_relsusy_iso(index, use_calo_iso) < cut;
-}
-
-
-=======
 bool PassSusyLeptonIsolation(int id, int index){
   if (abs(id) == 11) return PassSusyElectronIsolation(index, true);
   if (abs(id) == 13) return PassSusyMuonIsolation(index);
   return false;
 }
 
->>>>>>> 1.71
 bool GoodSusyLeptonID(int id, int index){ 
   if (abs(id) == 11) return GoodSusyElectronWithoutIsolation(index); 
   if (abs(id) == 13) return GoodSusyMuonWithoutIsolation(index); 
@@ -2120,15 +2064,9 @@ int numberOfExtraElectronsSUSY(int i_hyp){
   unsigned int nElec = 0; 
   for (int iel=0; iel < int(cms2.els_p4().size()); iel++) { 
     if ( cms2.els_p4()[iel].pt() < 10 ) continue; 
-<<<<<<< selections.cc
-    if ( fabs(cms2.els_p4()[iel].eta()) > 2.4 ) continue; 
-    if (! GoodSusyElectronWithoutIsolation(iel)) continue; 
-    if (! GoodSusyElectronWithIsolation(iel, true)) continue;
-=======
     if (fabs(cms2.els_p4()[iel].eta()) > 2.4 ) continue; 
     if (!GoodSusyElectronWithoutIsolation(iel)) continue; 
     if (!PassSusyElectronIsolation(iel, true)) continue;
->>>>>>> 1.71
     if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 11 && cms2.hyp_lt_index()[i_hyp] == iel ) continue; 
     if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 11 && cms2.hyp_ll_index()[i_hyp] == iel ) continue; 
     nElec++; 
@@ -2158,17 +2096,10 @@ std::vector<LorentzVector> getCaloJets(int i_hyp) {
     if ((dRbetweenVectors(cms2.hyp_lt_p4()[i_hyp],cms2.jets_p4()[jj]) < 0.4)||
 	(dRbetweenVectors(cms2.hyp_ll_p4()[i_hyp],cms2.jets_p4()[jj]) < 0.4)
 	) continue;
-<<<<<<< selections.cc
-    if (cms2.jets_p4()[jj].pt() < 30) continue;
-    if (fabs(cms2.jets_p4()[jj].Eta()) > 2.4) continue;
-    //    if (cms2.jets_emFrac()[jj] < 0.1) continue;
-    calo_jets.push_back(cms2.jets_p4()[jj]);
-=======
-    if (cms2.jets_p4()[jj].pt() < 30) continue;
+    if (cms2.jets_cor()[jj]*cms2.jets_p4()[jj].pt() < 30) continue;
     if (fabs(cms2.jets_p4()[jj].Eta()) > 2.4) continue;
     //fkw July21 2009 if (cms2.jets_emFrac()[jj] < 0.1) continue;
-    calo_jets.push_back(cms2.jets_p4()[jj]);
->>>>>>> 1.71
+    calo_jets.push_back(cms2.jets_cor()[jj]*cms2.jets_p4()[jj]);
   }
   
   if (calo_jets.size() > 1) {
@@ -2339,68 +2270,11 @@ int leptonIsFromW(int idx, int id, LorentzVector v) {
 //---------------------------------------------------------
 
 
-<<<<<<< selections.cc
-  isTrueLepton_ll = ( (abs(cms2.hyp_ll_id()[i_hyp]) == abs(cms2.hyp_ll_mc_id()[i_hyp]) &&
-		       abs(cms2.hyp_ll_mc_motherid()[i_hyp]) < 50 //I wish I could match to W or Z explicitely, not in MGraph
-		       )
-		      || (cms2.hyp_ll_mc_id()[i_hyp]==22 && 
-			  TMath::Abs(ROOT::Math::VectorUtil::DeltaR(cms2.hyp_ll_p4()[i_hyp],cms2.hyp_ll_mc_p4()[i_hyp])) <0.05
-			  && abs(cms2.hyp_ll_id()[i_hyp]) == abs(cms2.hyp_ll_mc_motherid()[i_hyp])
-			  )
-		      );
-
-  isTrueLepton_lt = ( (abs(cms2.hyp_lt_id()[i_hyp]) == abs(cms2.hyp_lt_mc_id()[i_hyp]) &&
-		       abs(cms2.hyp_lt_mc_motherid()[i_hyp]) < 50 //I wish I could match to W or Z explicitely, not in MGraph
-		       )
-		      || (cms2.hyp_lt_mc_id()[i_hyp]==22 && 
-			  TMath::Abs(ROOT::Math::VectorUtil::DeltaR(cms2.hyp_lt_p4()[i_hyp],cms2.hyp_lt_mc_p4()[i_hyp])) <0.05
-			  && abs(cms2.hyp_lt_id()[i_hyp]) == abs(cms2.hyp_lt_mc_motherid()[i_hyp])
-			  )
-		      );
-=======
 bool additionalZvetoSUSY09(int i_hyp) {
->>>>>>> 1.71
 
-<<<<<<< selections.cc
-  bool ttbarlep = false;
-  bool ttbarother = false;
-
-  //  if (genpCountPDGId(11,13,15) == 1) ttbarother = true;
-  if (genpCountPDGId(11,13,15) == 2) ttbarlep = true;
-  
-
-  bool isrealW_ll = false;
-  bool isrealW_lt = false;     
-=======
   // true if we want to veto this event
   bool veto=false;
->>>>>>> 1.71
 
-<<<<<<< selections.cc
-  { 
-    int els_mo = 0; 
-    int mus_mo = 0; 
-    int els_id = 0;
-    int mus_id = 0;
-    if (abs(cms2.hyp_ll_id()[i_hyp]) == 11) els_mo = abs(cms2.els_mc3_motherid()[cms2.hyp_ll_index()[i_hyp]]); 
-    if (abs(cms2.hyp_ll_id()[i_hyp]) == 13) mus_mo = abs(cms2.mus_mc3_motherid()[cms2.hyp_ll_index()[i_hyp]]); 
-    if (abs(cms2.hyp_ll_id()[i_hyp]) == 11) els_id = abs(cms2.els_mc3_id()[cms2.hyp_ll_index()[i_hyp]]);
-    if (abs(cms2.hyp_ll_id()[i_hyp]) == 13) mus_id = abs(cms2.mus_mc3_id()[cms2.hyp_ll_index()[i_hyp]]);
-    if ( (abs(cms2.hyp_ll_mc_motherid()[i_hyp]) == 24) || (els_mo == 24) || (mus_mo == 24) || (els_id == 24) || (mus_id == 24)) isrealW_ll = true; 
-  } 
- 
-  { 
-    int els_mo = 0;  
-    int mus_mo = 0;  
-    int els_id = 0;
-    int mus_id = 0;
-    if (abs(cms2.hyp_lt_id()[i_hyp]) == 11) els_mo = abs(cms2.els_mc3_motherid()[cms2.hyp_lt_index()[i_hyp]]); 
-    if (abs(cms2.hyp_lt_id()[i_hyp]) == 13) mus_mo = abs(cms2.mus_mc3_motherid()[cms2.hyp_lt_index()[i_hyp]]); 
-    if (abs(cms2.hyp_lt_id()[i_hyp]) == 11) els_id = abs(cms2.els_mc3_id()[cms2.hyp_lt_index()[i_hyp]]);
-    if (abs(cms2.hyp_lt_id()[i_hyp]) == 13) mus_id = abs(cms2.mus_mc3_id()[cms2.hyp_lt_index()[i_hyp]]);
-    if ((abs(cms2.hyp_lt_mc_motherid()[i_hyp]) == 24) || (els_mo == 24) || (mus_mo == 24) || (els_id == 24) || (mus_id == 24)) isrealW_lt = true; 
-  } 
-=======
   // first, look for Z->mumu
   for (unsigned int i=0; i < cms2.mus_p4().size(); i++) {
     bool hypLep1 = false;
@@ -2408,12 +2282,7 @@ bool additionalZvetoSUSY09(int i_hyp) {
     if (!GoodSusyMuonWithoutIsolation(i)) continue;
     if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 13 && cms2.hyp_lt_index()[i_hyp] == i ) hypLep1 = true;
     if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 13 && cms2.hyp_ll_index()[i_hyp] == i ) hypLep1 = true;
->>>>>>> 1.71
 
-<<<<<<< selections.cc
-  bool isLepll = false;
-  bool isLeplt = false;
-=======
     for (unsigned int j=i+1; j < cms2.mus_p4().size(); j++) {
       bool hypLep2 = false;
       if (cms2.mus_p4().at(j).pt() < 10.) continue;
@@ -2453,21 +2322,8 @@ bool additionalZvetoSUSY09(int i_hyp) {
       // Make the invariant mass
       LorentzVector vec = cms2.els_p4().at(i) + cms2.els_p4().at(j);
       if ( inZmassWindow(vec.mass()) ) return true;
->>>>>>> 1.71
 
-<<<<<<< selections.cc
-  if (isTrueLepton_ll || isrealW_ll) isLepll = true;
-  if (isTrueLepton_lt || isrealW_lt) isLeplt = true;
-  
-  if (isLepll && isLeplt && ttbarlep) {
-    return 1;
-  }  else if (isLepll || isLeplt )  {
-    return 2;
-  } else {
-    return 3;
-=======
     }
->>>>>>> 1.71
   }
   // done
   return veto;
@@ -2496,71 +2352,6 @@ bool isFakeableElSUSY09(int iEl){
   return true;
 }
 
-<<<<<<< selections.cc
-bool additionalZvetoSUSY09(int i_hyp) {
-
-  // true if we want to veto this event
-  bool veto=false;
-
-  // first, look for Z->mumu
-  for (unsigned int i=0; i < cms2.mus_p4().size(); i++) {
-    bool hypLep1 = false;
-    if (cms2.mus_p4().at(i).pt() < 10.)     continue;
-    if (!GoodSusyMuonWithoutIsolation(i)) continue;
-    if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 13 && cms2.hyp_lt_index()[i_hyp] == i ) hypLep1 = true;
-    if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 13 && cms2.hyp_ll_index()[i_hyp] == i ) hypLep1 = true;
-
-    for (unsigned int j=i+1; j < cms2.mus_p4().size(); j++) {
-      bool hypLep2 = false;
-      if (cms2.mus_p4().at(j).pt() < 10.) continue;
-      if (!GoodSusyMuonWithoutIsolation(j)) continue;
-      if (cms2.mus_charge().at(i) == cms2.mus_charge().at(j)) continue;
-      if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 13 && cms2.hyp_lt_index()[i_hyp] == j ) hypLep2 = true;
-      if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 13 && cms2.hyp_ll_index()[i_hyp] == j ) hypLep2 = true;
-      // At least one of them has to pass isolation
-      if (!GoodSusyMuonWithIsolation(i) && !GoodSusyMuonWithIsolation(j)) continue;
-      if ( hypLep1 && hypLep2 ) continue;
-      if ( !hypLep1 && !hypLep2 ) continue;
-      // Make the invariant mass
-      ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >
-                vec = cms2.mus_p4().at(i) + cms2.mus_p4().at(j);
-      if ( inZmassWindow(vec.mass()) ) return true;
-
-    }
-  }
-
-  // now, look for Z->ee
-  for (unsigned int i=0; i < cms2.els_p4().size(); i++) {
-    bool hypLep1 = false;
-    if (cms2.els_p4().at(i).pt() < 10.)     continue;
-    if (! GoodSusyElectronWithoutIsolation(i)) continue;
-    if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 11 && cms2.hyp_lt_index()[i_hyp] == i ) hypLep1 = true;
-    if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 11 && cms2.hyp_ll_index()[i_hyp] == i ) hypLep1 = true;
-
-    for (unsigned int j=i+1; j<cms2.els_p4().size(); j++) {
-      bool hypLep2 = false;
-      if (cms2.els_p4().at(j).pt() < 10.) continue;
-      if (! GoodSusyElectronWithoutIsolation(j)) continue;
-      if (cms2.els_charge().at(i) == cms2.els_charge().at(j)) continue;
-      // At least one of them has to pass isolation
-      if (! GoodSusyElectronWithIsolation(i, true) && ! GoodSusyElectronWithIsolation(j, true)) continue;
-      if ( TMath::Abs(cms2.hyp_lt_id()[i_hyp]) == 11 && cms2.hyp_lt_index()[i_hyp] == j ) hypLep2 = true;
-      if ( TMath::Abs(cms2.hyp_ll_id()[i_hyp]) == 11 && cms2.hyp_ll_index()[i_hyp] == j ) hypLep2 = true;
-      if ( hypLep1 && hypLep2 ) continue;
-      if ( !hypLep1 && !hypLep2 ) continue;
-      // Make the invariant mass
-      ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> >
-                vec = cms2.els_p4().at(i) + cms2.els_p4().at(j);
-      if ( inZmassWindow(vec.mass()) ) return true;
-
-    }
-  }
-  // done
-  return veto;
-}
-
-
-=======
 // Muons
 bool isFakeableMuSUSY09(int iMu) {
 
@@ -2576,7 +2367,6 @@ bool isFakeableMuSUSY09(int iMu) {
   return true;
 
 }
->>>>>>> 1.71
 
 //--------------------------------------------------------------------
 // Veto events if there are two leptons in the 
@@ -2698,6 +2488,20 @@ bool passTriggersMu9orLisoE15(int dilType) {
 
   return true;
 }
+
+bool passTriggers8E29Mu9orE15LW(int dilType) {
+  //TString method
+  bool hlt_ele15_lw_l1r = cms2.passHLT8E29Trigger("HLT_Ele15_LW_L1R");
+  bool hltMu9           = cms2.passHLT8E29Trigger("HLT_Mu9");
+  
+  if (dilType == 0 && ! (hltMu9) ) return false;
+  if ((dilType == 1 || dilType == 2) && ! (hltMu9 || hlt_ele15_lw_l1r)) return false;
+  if (dilType == 3 && ! hlt_ele15_lw_l1r) return false;     
+
+  return true;
+}
+
+
 
 
 bool passTriggersTTDil08JanTrial(int dilType) {
@@ -3254,7 +3058,7 @@ bool isconversionElectron09(int elIdx) {
 
 // false if below ptcut, aboveabsEtaCut, below dRCut wrt hypothesis
 bool isGoodDilHypJet(unsigned int jetIdx, unsigned int hypIdx, double ptCut, double absEtaCut, double dRCut, bool muJetClean){
-  if (cms2.jets_p4()[jetIdx].pt()< ptCut || fabs(cms2.jets_p4()[jetIdx].eta())> absEtaCut) return false;
+  if (cms2.jets_cor()[jetIdx]*cms2.jets_p4()[jetIdx].pt()< ptCut || fabs(cms2.jets_p4()[jetIdx].eta())> absEtaCut) return false;
   double dR_ll = ROOT::Math::VectorUtil::DeltaR(cms2.hyp_ll_p4()[hypIdx],cms2.jets_p4()[jetIdx]);
   double dR_lt = ROOT::Math::VectorUtil::DeltaR(cms2.hyp_lt_p4()[hypIdx],cms2.jets_p4()[jetIdx]);
   
