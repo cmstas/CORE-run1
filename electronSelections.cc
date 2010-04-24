@@ -244,6 +244,8 @@ bool electronIsolation_cand01(const unsigned int index)
 
 //
 // class based electron id that we have used before
+// this was optimised in the 2X series of CMSSW
+// and should be considered depracated
 //
 bool electronId_classBasedLoose(const unsigned int index)
 {
@@ -261,68 +263,57 @@ bool electronId_classBasedTight(const unsigned int index)
 // class based id that is new/experimental
 //
 
-bool electronId_classBasedExperimental(const unsigned int index)
+void electronId_classBasedIdAssign(std::vector<double> &cutarr, double cutvals[])
+{
+    cutarr.clear();
+    for (unsigned int i = 0; i < 18; ++i) {
+        cutarr.push_back(cutvals[i]);
+    }
+}
+
+unsigned int electronId_CIC(const cic_tightness tightness, const unsigned int index)
 {
 
     //
-    // the parameters for loose
+    // set the parameters for the chosen tightness
     //
 
-    double cutdeta[18] = {
-        9.58e-03, 4.06e-03, 1.22e-02, 1.37e-02, 8.37e-03, 1.27e-02,
-        1.10e-02, 3.36e-03, 9.77e-03, 1.50e-02, 6.75e-03, 1.09e-02,
-        1.40e-02, 5.08e-03, 1.09e-02, 1.46e-02, 5.06e-03, 1.27e-02 };
-    double cutdphi[18] = {
-        3.72e-02, 1.14e-01, 1.18e-01, 4.88e-02, 1.17e-01, 1.19e-01,
-        6.06e-02, 5.48e-02, 1.17e-01, 7.00e-02, 3.55e-02, 1.17e-01,
-        8.80e-02, 4.50e-02, 1.18e-01, 9.19e-02, 2.36e-02, 5.15e-02 };
-    double cuteopin[18] = {
-        8.78e-01, 8.02e-01, 8.14e-01, 9.42e-01, 7.35e-01, 7.74e-01,
-        8.29e-01, 9.09e-01, 8.29e-01, 8.13e-01, 8.60e-01, 8.97e-01,
-        8.17e-01, 8.31e-01, 8.18e-01, 8.61e-01, 7.87e-01, 7.89e-01 };
-    double cuthoe[18] = {
-        8.87e-02, 9.34e-02, 9.49e-02, 9.86e-02, 4.31e-02, 8.78e-02,
-        9.70e-02, 5.09e-02, 9.80e-02, 9.91e-02, 3.21e-02, 9.28e-02,
-        6.63e-02, 7.17e-02, 9.66e-02, 7.58e-02, 1.49e-02, 1.31e-02 };
-    double cutip[18] = {
-        2.46e-02, 7.60e-02, 9.66e-02, 8.85e-02, 4.41e-01, 2.05e-01,
-        2.92e-02, 2.93e-02, 6.19e-02, 2.51e-02, 1.59e-01, 8.15e-02,
-        7.29e+00, 1.06e-02, 5.76e+00, 6.89e+00, 1.27e+00, 5.89e+00 };
-    double cutisoecal[18] = {
-        3.34e+01, 2.81e+01, 7.32e+00, 2.74e+01, 7.33e+00, 2.17e+01,
-        9.38e+01, 1.02e+02, 1.21e+01, 2.60e+01, 8.91e+00, 1.00e+01,
-        1.61e+01, 3.13e+01, 1.69e+01, 1.54e+01, 1.33e+01, 3.77e+01 };
-    double cutisohcal[18] = {
-        1.35e+01, 9.93e+00, 7.56e+00, 1.48e+01, 8.10e+00, 1.08e+01,
-        4.27e+01, 2.01e+01, 9.11e+00, 1.04e+01, 6.89e+00, 5.59e+00,
-        8.53e+00, 9.59e+00, 2.42e+01, 2.78e+00, 8.67e+00, 2.88e-01 };
-    double cutisotk[18] = {
-        2.43e+01, 8.45e+00, 1.44e+01, 2.78e+01, 6.02e+00, 1.05e+01,
-        1.41e+01, 1.02e+01, 1.45e+01, 1.91e+01, 6.10e+00, 1.41e+01,
-        8.59e+00, 8.33e+00, 8.30e+00, 8.93e+00, 8.60e+00, 1.60e+01 };
-    double cutmishits[18] = {
-        5.50e+00, 1.50e+00, 5.50e+00, 2.50e+00, 2.50e+00, 2.50e+00,
-        3.50e+00, 5.50e+00, 5.00e-01, 1.50e+00, 2.50e+00, 5.00e-01,
-        1.50e+00, 1.50e+00, 5.00e-01, 5.00e-01, 5.00e-01, 5.00e-01 };
-    double cutsee[18] = {
-        1.72e-02, 1.15e-02, 1.43e-02, 3.44e-02, 2.95e-02, 3.04e-02,
-        1.45e-02, 1.08e-02, 1.28e-02, 3.47e-02, 3.07e-02, 3.16e-02,
-        1.80e-02, 1.10e-02, 1.32e-02, 3.49e-02, 3.10e-02, 3.27e-02 };
+    std::vector<double> cutdeta;
+    std::vector<double> cutdphi;
+    std::vector<double> cuteopin;
+    std::vector<double> cutet;
+    std::vector<double> cuthoe;
+    std::vector<double> cutip;
+    std::vector<double> cutisoecal;
+    std::vector<double> cutisohcal;
+    std::vector<double> cutisotk;
+    std::vector<double> cutmishits;
+    std::vector<double> cutsee;
 
-    //double scTheta = (2*atan(exp(-electron->superCluster()->eta())));
-    //double scEt = electron->superCluster()->energy()*sin(scTheta); 
-    double scEt = cms2.els_eSC()[index]/cosh(cms2.els_etaSC()[index]);
+    eidGet(tightness, cutdeta, cutdphi, cuteopin, cutet, cuthoe, 
+            cutip, cutisoecal, cutisohcal, cutisotk, cutmishits, cutsee);
 
-    double eta = cms2.els_p4()[index].Eta();
+    //
+    // get the variables that are going to be cut on
+    //
+
+    double scTheta = (2*atan(exp(cms2.els_etaSC()[index])));
+    double scEt = cms2.els_eSC()[index]*sin(scTheta); 
+    //double eta = cms2.els_p4()[index].Eta(); // not used
     // this is eSuperClusterOverP
     double eOverP = cms2.els_eOverPIn()[index];
-    double eSeed = cms2.els_eSeed()[index];
-    double pin  = cms2.els_p4In()[index].R();   
-    double pout = cms2.els_p4Out()[index].R(); 
-    double eSeedOverPin = eSeed/pin; 
-    double fBrem = (pin-pout)/pin;
+
+    //    double eSeed = cms2.els_eSeed()[index];
+    //    double pin  = cms2.els_p4In()[index].R();   
+    //    double pout = cms2.els_p4Out()[index].R(); 
+    //    double eSeedOverPin = eSeed/pin; 
+    //    double fBrem = (pin-pout)/pin;
+    double eSeedOverPin = cms2.els_eSeedOverPIn()[index];
+    double fBrem = cms2.els_fbrem()[index];
+
+
     double hOverE = cms2.els_hOverE()[index];
-    double sigmaee = cms2.els_sigmaEtaEta()[index];
+    double sigmaee = cms2.els_sigmaIEtaIEta()[index];
     double e25Max = cms2.els_e2x5Max()[index];
     double e15 = cms2.els_e1x5()[index];
     double e55 = cms2.els_e5x5()[index];
@@ -338,10 +329,17 @@ bool electronId_classBasedExperimental(const unsigned int index)
     double ecalIso = cms2.els_ecalIso04()[index];
     double hcalIso = cms2.els_hcalIso04()[index];
     double hcalIso1 = cms2.els_hcalDepth1TowerSumEt04()[index];
-    double hcalIso2 = cms2.els_hcalDepth1TowerSumEt04()[index];
+    double hcalIso2 = cms2.els_hcalDepth2TowerSumEt04()[index];
+
+    ip = fabs(cms2.els_d0corr()[index]);
+
+    // should be sigmaIEtaIEta with respect to the SC...
+    // (in the EE it is with respect to the seed BC...)
+    //if (cms2.els_fiduciality()[index] & (1<<ISEB))
+    //    sigmaee = cms2.els_sigmaIEtaIEtaSC()[index];
 
     // version for classify is 2
-    int cat = classify(2, index);
+    unsigned int cat = classify(2, index);
 
     bool isEB = (cms2.els_fiduciality()[index] & (1<<ISEB));
     int eb;
@@ -350,7 +348,7 @@ bool electronId_classBasedExperimental(const unsigned int index)
     else 
         eb = 1; 
 
-    double result = 0.;
+    unsigned int result = 0;
     int bin = 0;
 
     if (scEt < 20.)
@@ -369,48 +367,32 @@ bool electronId_classBasedExperimental(const unsigned int index)
         hcalIso = hcalIso*pow(40./scEt, 2); 
     }
 
-    if ((tkIso > cutisotk[cat+3*eb+bin*6]) ||
-            (ecalIso > cutisoecal[cat+3*eb+bin*6]) ||
-            (hcalIso > cutisohcal[cat+3*eb+bin*6]))
-        result = 0.;
-    else
-        result = 2.;
+    if ((tkIso < cutisotk[cat+3*eb+bin*6]) &&
+            (ecalIso < cutisoecal[cat+3*eb+bin*6]) &&
+            (hcalIso < cutisohcal[cat+3*eb+bin*6]))
+        result |= (1<<ELEPASS_CIC_ISO);
 
     if (fBrem < -2)
         return result;
 
-    //std::cout << "hoe" << hOverE << std::endl;
-    if (hOverE > cuthoe[cat+3*eb+bin*6])
-        return result;
+    if (hOverE < cuthoe[cat+3*eb+bin*6] &&
+        sigmaee < cutsee[cat+3*eb+bin*6] &&
+        fabs(deltaPhiIn) < cutdphi[cat+3*eb+bin*6] &&
+        fabs(deltaEtaIn) < cutdeta[cat+3*eb+bin*6] &&
+        eSeedOverPin > cuteopin[cat+3*eb+bin*6])
+        result |= (1<<ELEPASS_CIC_ID);
 
-    //std::cout << "see" << sigmaee << std::endl;
-    if (sigmaee > cutsee[cat+3*eb+bin*6])
-        return result;
+    if (ip < cutip[cat+3*eb+bin*6])
+        result |= (1<<ELEPASS_CIC_IP);
 
-    //std::cout << "dphiin" << fabs(deltaPhiIn) << std::endl;
-    if (fabs(deltaPhiIn) > cutdphi[cat+3*eb+bin*6])
-        return result;  
+    if (mishits < cutmishits[cat+3*eb+bin*6])
+        result |= (1<<ELEPASS_CIC_CONV);
 
-    //std::cout << "detain" << fabs(deltaEtaIn) << std::endl;
-    if (fabs(deltaEtaIn) > cutdeta[cat+3*eb+bin*6])
-        return result;
-
-    //std::cout << "eseedopin " << eSeedOverPin << std::endl;
-    if (eSeedOverPin < cuteopin[cat+3*eb+bin*6])
-        return result;
-
-    //std::cout << "ip" << ip << std::endl;
-    if (ip > cutip[cat+3*eb+bin*6])
-        return result;
-
-    if (mishits > cutmishits[cat+3*eb+bin*6])
-        return result;
-
-    result = result + 1.;
     return result;
+
 }
 
-int classify(const unsigned int version, const unsigned int index) {
+unsigned int classify(const unsigned int version, const unsigned int index) {
 
     // this is eSuperClusterOverP
     double eOverP = cms2.els_eOverPIn()[index];
@@ -447,7 +429,82 @@ int classify(const unsigned int version, const unsigned int index) {
     }
 }
 
+//
+// VBTF stuff
+//
 
+//WP70 (70%)
+//=======
+//EB
+//--
+//track_iso  2.5 GeV
+//ecal_iso   3.0 GeV
+//hcal_iso   5.0 GeV
+//sihih      0.01
+//Dphi@vtx   0.02
+//Deta@vtx   0.006
+//H/E        0.02
+
+//EE
+//--
+//track_iso  0.8 GeV
+//ecal_iso   2.5 GeV
+//hcal_iso   0.25 GeV
+//sihih      0.03
+//Dphi@vtx   0.02
+//Deta@vtx   0.003
+//H/E        0.0025
+
+unsigned int electronId_VBTF70(const unsigned int index)
+{
+
+    unsigned int answer = 0;
+    float tkThresholds[2]   =   {2.5, 0.8};
+    float ecalThresholds[2] =   {3.0, 2.5};
+    float hcalThresholds[2] =   {5.0, 0.25};
+    float dEtaInThresholds[2]               = {0.006, 0.003};
+    float dPhiInThresholds[2]               = {0.020, 0.020};
+    float hoeThresholds[2]                  = {0.02, 0.0025};
+    float sigmaIEtaIEtaThresholds[2]        = {0.01, 0.03};
+
+    // barrel
+    if (fabs(cms2.els_etaSC()[index]) < 1.479) {
+
+        if (cms2.els_tkJuraIso()[index] < tkThresholds[0] &&
+            cms2.els_ecalIso()[index]   < ecalThresholds[0] &&
+            cms2.els_hcalIso()[index]   < hcalThresholds[0])
+            answer |= (1<<1);
+
+        if (fabs(cms2.els_dEtaIn()[index]) < dEtaInThresholds[0] &&
+            fabs(cms2.els_dPhiIn()[index]) < dPhiInThresholds[0] &&
+            cms2.els_hOverE()[index] < hoeThresholds[0] &&
+            cms2.els_sigmaIEtaIEta()[index] < sigmaIEtaIEtaThresholds[0])
+            answer |= (1<<0);
+    }
+
+    // endcap
+    if (fabs(cms2.els_etaSC()[index]) > 1.479) {
+        if (cms2.els_tkJuraIso()[index] < tkThresholds[1] &&
+            cms2.els_ecalIso()[index]   < ecalThresholds[1] &&
+            cms2.els_hcalIso()[index]   < hcalThresholds[1])
+            answer |= (1<<1);
+
+        if (fabs(cms2.els_dEtaIn()[index]) < dEtaInThresholds[1] &&
+            fabs(cms2.els_dPhiIn()[index]) < dPhiInThresholds[1] &&
+            cms2.els_hOverE()[index] < hoeThresholds[1] &&
+            cms2.els_sigmaIEtaIEta()[index] < sigmaIEtaIEtaThresholds[1])
+            answer |= (1<<0);
+    }
+
+    return answer;
+
+}
+
+
+
+//
+//
+//
 
 
 
@@ -492,7 +549,6 @@ float electronIsolation_relsusy_cand0(const unsigned int index, bool use_calo_is
 
 float electronIsolation_relsusy_cand1(const unsigned int index, bool use_calo_iso)
 {
-    printf("elesel cms2 = 0x%x\n", &cms2);
     float sum = cms2.els_tkJuraIso().at(index);
     if (use_calo_iso) {
         if (fabs(cms2.els_etaSC().at(index)) > 1.479) sum += cms2.els_ecalIso().at(index);
@@ -502,7 +558,6 @@ float electronIsolation_relsusy_cand1(const unsigned int index, bool use_calo_is
     double pt = cms2.els_p4().at(index).pt();
     return sum/max(pt, 20.);
 }
-
 
 //
 //conversion rejection
