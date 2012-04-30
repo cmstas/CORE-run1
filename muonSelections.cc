@@ -1,6 +1,6 @@
 // Header
 #include "muonSelections.h"
-//#include "electronSelections.h"
+#include "eventSelections.h"
 
 // C++ includes
 #include <iostream>
@@ -406,7 +406,7 @@ bool muonIdNotIsolated(unsigned int index, SelectionType type) {
         // if (cms2.mus_numberOfMatchedStations().at(index) < 2)                    return false; // require muon segements in at least two muon stations
 
         if (trkidx < 0)                                                          return false; // require a matching track
-        if (cms2.trks_nlayers().at(trkidx) < 9)                                  return false; // require at least 8 tracker layers with hits
+        if (cms2.trks_nlayers().at(trkidx) < 6)                                  return false; // require at least 6 tracker layers with hits
         if (cms2.trks_valid_pixelhits().at(trkidx) == 0)                         return false; // require at least 1 valid pixel hit
 
         if (cms2.mus_gfit_validSTAHits().at(index) == 0)                         return false; // Glb fit must have hits in mu chambers
@@ -434,7 +434,7 @@ bool muonIdNotIsolated(unsigned int index, SelectionType type) {
         // if (cms2.mus_numberOfMatchedStations().at(index) < 2)                    return false; // require muon segements in at least two muon stations
 
         if (trkidx < 0)                                                          return false; // require a matching track
-        if (cms2.trks_nlayers().at(trkidx) < 9)                                  return false; // require at least 8 tracker layers with hits
+        if (cms2.trks_nlayers().at(trkidx) < 6)                                  return false; // require at least 6 tracker layers with hits
         if (cms2.trks_valid_pixelhits().at(trkidx) == 0)                         return false; // require at least 1 valid pixel hit
 
         if (cms2.mus_gfit_validSTAHits().at(index) == 0)                         return false; // Glb fit must have hits in mu chambers
@@ -743,8 +743,15 @@ void muonIsoValuePF2012 (float &pfiso_ch, float &pfiso_em, float &pfiso_nh, cons
         // charged hadrons closest vertex
         // should be the primary vertex
         if (particleId == 211 || particleId == 321 || particleId == 2212 || particleId == 999211) {
-            int pfVertexIndex = chargedHadronVertex(ipf);
-            if (pfVertexIndex != ivtx) continue;
+            if (cms2.pfcands_vtxidx().at(ipf) != ivtx) continue;
+            if (dR < 0.0001)
+                continue;
+        }
+        if (particleId == 22 || particleId == 130 || particleId == 111 || particleId == 310 || particleId == 2112) {
+            if (cms2.pfcands_p4().at(ipf).pt() < 0.5)
+                continue;
+            if (dR < 0.01)
+                continue;
         }
 
         // add to isolation sum
@@ -754,7 +761,7 @@ void muonIsoValuePF2012 (float &pfiso_ch, float &pfiso_em, float &pfiso_nh, cons
     }
 }
 
-float muonIsoValuePF2012_FastJetEffArea(int index, float conesize, int ivtx)
+float muonIsoValuePF2012_FastJetEffArea(int index, float conesize, float effective_area, int ivtx)
 {
     float pt     = cms2.mus_p4()[index].pt();
 
@@ -766,10 +773,87 @@ float muonIsoValuePF2012_FastJetEffArea(int index, float conesize, int ivtx)
     muonIsoValuePF2012(pfiso_ch, pfiso_em, pfiso_nh, conesize, index, ivtx);
 
     // rho
-    float AEff = TMath::Pi() * pow(conesize, 2); // this is wrong, but leave for now until i figure out what the correct thing to do is
     float rhoPrime = std::max(cms2.evt_rho(), float(0.0));
-    float pfiso_n = std::max(pfiso_em + pfiso_nh - rhoPrime * AEff, float(0.0));
+    float pfiso_n = std::max(pfiso_em + pfiso_nh - rhoPrime * effective_area, float(0.0));
     float pfiso = (pfiso_ch + pfiso_n) / pt;   
 
     return pfiso;    
+}
+
+float muonRadialIsolation (unsigned int imu, float &chiso, float &nhiso, float &emiso, float neutral_et_threshold, float cone_size, bool verbose)
+{
+    float radial_iso = 0.;
+    chiso = 0.;
+    nhiso = 0.;
+    emiso = 0.;
+
+    int ivtx = firstGoodVertex();
+
+    LorentzVector p4 = (cms2.mus_trk_p4().at(imu).pt() > 0.01) ? cms2.mus_trk_p4().at(imu) : cms2.mus_sta_p4().at(imu);
+    if (p4.pt() < 0.01)
+        return -9999.;
+
+    for (unsigned int ipf = 0; ipf < cms2.pfcands_p4().size(); ipf++) {
+
+        // skip electrons and muons
+        const int particleId = abs(cms2.pfcands_particleId().at(ipf));
+        if (particleId == 11) {
+            if (verbose)
+                std::cout << "Skipping electron with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;
+            continue;
+        }
+        if (particleId == 13) {
+            if (verbose)
+                std::cout << "Skipping muon with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;
+            continue;
+        }
+
+        // in the event that the muon is not a PF muon, need to remove any other PF cand reconstructed using the same track as the muon
+        if (!cms2.mus_pid_PFMuon().at(imu) && cms2.mus_trkidx().at(imu) >= 0 && cms2.mus_trkidx().at(imu) == cms2.pfcands_trkidx().at(ipf)) {
+            if (verbose)
+                std::cout << "Skipping PF cand with same track as muon with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;
+            continue;
+        }
+
+        const float dr = ROOT::Math::VectorUtil::DeltaR(cms2.pfcands_p4().at(ipf), cms2.mus_p4().at(imu));
+        if (dr > cone_size) {
+            if (verbose)
+                std::cout << "Skipping PF candidate outside of cone with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;            
+            continue;
+        }
+        if (dr < 0.01) {
+            if (verbose)
+                std::cout << "Skipping PF candidate in veto cone with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;            
+            continue;
+        }
+
+        // deal with charged
+        if (cms2.pfcands_charge().at(ipf) != 0) {
+            if (cms2.pfcands_vtxidx().at(ipf) != ivtx) {
+                if (verbose)
+                    std::cout << "Skipping PF candidate from other vertex  with id, pt, eta, ivtx = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " 
+                              << cms2.pfcands_p4().at(ipf).eta() << ", " << cms2.pfcands_vtxidx().at(ipf) << std::endl;
+                continue;
+            }
+            radial_iso += cms2.pfcands_p4().at(ipf).pt() * (1 - 3*dr) / cms2.mus_p4().at(imu).pt();
+            chiso += cms2.pfcands_p4().at(ipf).pt() * (1 - 3*dr) / cms2.mus_p4().at(imu).pt();
+            if (verbose)
+                std::cout << "Summing CH with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;            
+        }
+        else if (cms2.pfcands_p4().at(ipf).pt() > neutral_et_threshold) {
+            radial_iso += cms2.pfcands_p4().at(ipf).pt() * (1 - 3*dr) / cms2.mus_p4().at(imu).pt();
+            if (particleId == 22) {
+                emiso += cms2.pfcands_p4().at(ipf).pt() * (1 - 3*dr) / cms2.mus_p4().at(imu).pt();
+                if (verbose)
+                    std::cout << "Summing EM with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;            
+            }
+            else {
+                nhiso += cms2.pfcands_p4().at(ipf).pt() * (1 - 3*dr) / cms2.mus_p4().at(imu).pt();
+                if (verbose)
+                    std::cout << "Summing NH with id, pt, eta = " << cms2.pfcands_particleId().at(ipf) << ", " << cms2.pfcands_p4().at(ipf).pt() << ", " << cms2.pfcands_p4().at(ipf).eta() << std::endl;            
+            }
+        }
+    } // loop over pfcands
+
+    return radial_iso;
 }
