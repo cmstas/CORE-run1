@@ -52,9 +52,17 @@ struct SortByPt
     {
         return lhs.first.pt() > rhs.first.pt();
     }
+
+    bool operator () (const std::pair<int, int>& lhs, const std::pair<int, int>& rhs) 
+    {
+        const LorentzVector& lhs_p4 = (abs(lhs.first)==11 ? tas::els_p4().at(lhs.second) : tas::mus_p4().at(lhs.second));
+        const LorentzVector& rhs_p4 = (abs(rhs.first)==11 ? tas::els_p4().at(rhs.second) : tas::mus_p4().at(rhs.second));
+        return lhs_p4.pt() > rhs_p4.pt();
+    }
 };
 
 
+using ROOT::Math::VectorUtil::DeltaR;
 
 /////////////////////////////////////////////////////////////////
 ///                                                           ///
@@ -71,26 +79,16 @@ struct SortByPt
 ////////////////////////////////////////////////////////////////////////////////////////////     
 bool samesign::isGoodLepton(int id, int idx, bool use_el_eta)
 {
-    // require a valid vertex
-    // needed for the d0 calculation 
-    const int vtxidx = firstGoodVertex();
-    if (vtxidx < 0)
-    {
-        return false;
-    }
+    // transverse IP
+    const float d0 = leptonD0(id, idx);
 
     // electrons
     if (abs(id) == 11)
     {
         // tightened |d0| cut wrt standard ID cut
-        const int gsfidx = cms2.els_gsftrkidx().at(idx);
-        if (gsfidx >= 0) 
+        if (fabs(d0) > 0.01) // 100 microns (units are cm)
         {
-            const float d0 = gsftrks_d0_pv(gsfidx, vtxidx).first;
-            if (fabs(d0) > 0.01) // 100 microns (units are cm)
-            {
-                return false;
-            }
+            return false;
         }
 
         if (use_el_eta)
@@ -136,14 +134,9 @@ bool samesign::isGoodLepton(int id, int idx, bool use_el_eta)
     if (abs(id) == 13)
     {
         // tightened |d0| cut wrt standard ID cut
-        const int trkidx = cms2.mus_trkidx().at(idx);
-        if (trkidx >= 0) 
+        if (fabs(d0) > 0.005) // 50 microns (units are cm)
         {
-            const float d0 = trks_d0_pv(trkidx, vtxidx).first;
-            if (fabs(d0) > 0.005) // 50 microns (units are cm)
-            {
-                return false;
-            }
+            return false;
         }
 
         return (muonIdNotIsolated(idx, NominalSSv5));
@@ -152,6 +145,61 @@ bool samesign::isGoodLepton(int id, int idx, bool use_el_eta)
     return false;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2012 lepton impact parameters 
+// uses CTF track for muons and GSF tracks for elections
+// if no matching track found, return bogus value of -999999
+// calc w.r.t first good vertex
+////////////////////////////////////////////////////////////////////////////////////////////     
+float samesign::leptonD0(const int id, const int idx)
+{
+    const int vtxidx = firstGoodVertex();
+    if (vtxidx < 0) {throw std::domain_error("samesign::leptonD0] ERROR - first good vertex index < 0");}
+    if (abs(id)==13)
+    {
+        const int trkidx = cms2.mus_trkidx().at(idx);
+        if (trkidx >= 0)
+        {
+            return trks_d0_pv(trkidx, vtxidx).first;
+        }
+    }
+    else if (abs(id)==11)
+    {
+        const int gsfidx = cms2.els_gsftrkidx().at(idx);
+        if (gsfidx >= 0) 
+        {
+            return gsftrks_d0_pv(gsfidx, vtxidx).first;
+        }
+    }
+
+    // return bogus for non electon/muon
+    return -999999.0;
+}
+
+float samesign::leptonDz(int id, int idx)
+{
+    const int vtxidx = firstGoodVertex();
+    if (vtxidx < 0) {throw std::domain_error("samesign::leptonDz] ERROR - first good vertex index < 0");}
+    if (abs(id)==13)
+    {
+        const int trkidx = cms2.mus_trkidx().at(idx);
+        if (trkidx >= 0)
+        {
+            return trks_dz_pv(trkidx, vtxidx).first;
+        }
+    }
+    else if (abs(id)==11)
+    {
+        const int gsfidx = cms2.els_gsftrkidx().at(idx);
+        if (gsfidx >= 0)
+        {
+            return gsftrks_dz_pv(gsfidx, vtxidx).first;
+        }
+    }
+
+    // return bogus for non electon/muon
+    return -999999.0;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////     
 // 2012 isolated lepton
@@ -769,6 +817,180 @@ bool samesign::makesExtraGammaStar(int idx, bool apply_id_iso) {
 
     return false;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// additional leptons for same sign analysis
+///////////////////////////////////////////////////////////////////////////////////////////
+
+// does it pass the 3rd muon selection
+bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
+{
+    using namespace tas;
+
+    // return false if index is invalid
+    if (mu_idx < 0)
+    {
+        throw std::domain_error("[samesign::passes3rdMuonSelection] ERROR - index is invalid!"); 
+    }
+
+    if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
+    if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
+    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}                    
+    if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;} 
+    if (samesign::leptonD0(13, mu_idx) > 0.02)                   {return false;}
+    if (samesign::leptonDz(13, mu_idx) > 0.5)                    {return false;}
+
+    // if we're here, return true
+    return true;
+}
+
+// does it pass the 3rd electron selection (no overlap removal)
+// POG ID loose working point
+// https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification
+bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float min_lep_pt)
+{
+    using namespace tas;
+
+    // return false if index is invalid
+    if (el_idx < 0)
+    {
+        throw std::domain_error("[samesign::passes3rdElectronSelection] ERROR - index is invalid!"); 
+    }
+
+    // electron selections
+    if (fabs(els_p4().at(el_idx).eta()) > 2.4)                                                   {return false;}
+    if (fabs(els_p4().at(el_idx).pt()) < min_lep_pt)                                             {return false;}
+    if (not electronId_WP2012_v3(el_idx, MEDIUM))                                                {return false;}                    
+    if (1.4442 < fabs(cms2.els_etaSC().at(el_idx)) && fabs(cms2.els_etaSC().at(el_idx)) < 1.566) {return false;} 
+    if (samesign::leptonIsolation(11, el_idx) > 0.15)                                            {return false;} 
+    if (samesign::leptonD0(11, el_idx) > 0.02)                                                   {return false;}
+    if (samesign::leptonDz(11, el_idx) > 0.2)                                                    {return false;}
+
+    // if we're here, return true
+    return true;
+}
+
+// check that the electron overlaps with a selection muon
+bool electronOverlapsMuon(const LorentzVector& el_p4)
+{
+    using namespace tas;
+
+    for (size_t midx = 0; midx < mus_p4().size(); midx++)
+    {
+        if (not passes3rdMuonSelection(midx, /*min_pt=*/0.0)) {continue;}
+        if (DeltaR(el_p4, mus_p4().at(midx)) < 0.1)           {return true;}
+    }
+
+    // if we got here, then none found
+    return false;
+}
+
+// does it pass the 3rd lepton selection
+bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float min_lep_pt)
+{
+    using namespace tas;
+
+    // return false if index is invalid
+    if (lep_idx < 0)
+    {
+        throw std::domain_error("[samesign::passes3rdLeptonSelection] ERROR - index is invalid!"); 
+    }
+
+    // electron selections
+    // POG ID loose working point
+    // https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification
+    if (abs(lep_id)==11)
+    {
+        if (not passes3rdElectronSelectionNoOverlapRemoval(lep_idx, min_lep_pt)) {return false;}
+        if (electronOverlapsMuon(els_p4().at(lep_idx)))                          {return false;} 
+    }
+
+    // muon selections
+    if (abs(lep_id)==13)
+    {
+        if (not passes3rdMuonSelection(lep_idx, min_lep_pt)) {return false;}
+    }
+
+    // if we're here, return true
+    return true;
+}
+
+// additional selected leptons 
+std::vector<std::pair<int, int> > samesign::additionalLeptons(const int idx, const float min_lep_pt)
+{
+    using namespace tas;
+
+    std::vector<unsigned int> el_indices;
+    std::vector<unsigned int> mu_indices;
+
+    const int lt_id           = hyp_lt_id().at(idx);
+    const int ll_id           = hyp_ll_id().at(idx);
+    const unsigned int lt_idx = hyp_lt_index().at(idx);
+    const unsigned int ll_idx = hyp_ll_index().at(idx);
+
+    (abs(lt_id) == 11) ? el_indices.push_back(lt_idx) : mu_indices.push_back(lt_idx);
+    (abs(ll_id) == 11) ? el_indices.push_back(ll_idx) : mu_indices.push_back(ll_idx);
+    if (el_indices.size() + mu_indices.size() != 2)
+    {
+        throw std::runtime_error("[samesign::highestPtAdditionalLepton] ERROR: don't have 2 leptons in hypothesis!!!");
+    }
+
+    // selected leptons 
+    std::vector<std::pair<int, int> > selected_leps;
+
+    // loop over electrons
+    for (size_t eidx = 0; eidx != els_p4().size(); eidx++)
+    {
+        // skip hyp electrons
+        if (std::find(el_indices.begin(), el_indices.end(), eidx) != el_indices.end()) {continue;}
+
+        // return true if this electron passes the 3rd lepton selection
+        if (passes3rdLeptonSelection(11, eidx, min_lep_pt))
+        {
+            selected_leps.push_back(std::make_pair(-11 * els_charge().at(eidx), eidx));
+        }
+    }
+        
+    // loop over muons
+    for (size_t midx = 0; midx != mus_p4().size(); midx++)
+    {
+        // skip hyp muons
+        if (std::find(mu_indices.begin(), mu_indices.end(), midx) != mu_indices.end()) {continue;}
+
+        // return true if this muons passes the 3rd lepton selection
+        if (passes3rdLeptonSelection(13, midx, min_lep_pt))
+        {
+            selected_leps.push_back(std::make_pair(-13 * mus_charge().at(midx), midx));
+        }
+    }
+
+    // sort by pt
+    std::sort(selected_leps.begin(), selected_leps.end(), SortByPt());
+        
+    // if we got here, then we didn't find one
+    return selected_leps;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// highest pT additional lepton for same sign analysis
+///////////////////////////////////////////////////////////////////////////////////////////
+std::pair<int, int> samesign::highestPtAdditionalLepton(const int idx, const float min_lep_pt)
+{
+    std::vector<std::pair<int, int> > leps = samesign::additionalLeptons(idx, min_lep_pt);
+    if (not leps.empty()) {return leps.front();}
+    return std::make_pair(-999999, -999999);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// 3rd lepton veto for same sign analysis
+///////////////////////////////////////////////////////////////////////////////////////////
+bool samesign::has3rdLepton(const int idx, const float min_lep_pt)
+{
+    return (not additionalLeptons(idx, min_lep_pt).empty());
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // 2012 get jets and perform overlap removal with numerator e/mu with pt > x (defaults are 20/20 GeV)
