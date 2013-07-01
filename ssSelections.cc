@@ -877,8 +877,8 @@ bool electronOverlapsMuon(const LorentzVector& el_p4)
 
     for (size_t midx = 0; midx < mus_p4().size(); midx++)
     {
-        if (not passes3rdMuonSelection(midx, /*min_pt=*/0.0)) {continue;}
-        if (DeltaR(el_p4, mus_p4().at(midx)) < 0.1)           {return true;}
+        if (not passes3rdMuonSelection(midx, /*min_pt=*/10.0)) {continue;   }
+        if (DeltaR(el_p4, mus_p4().at(midx)) < 0.1)            {return true;}
     }
 
     // if we got here, then none found
@@ -916,17 +916,17 @@ bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float m
 }
 
 // additional selected leptons 
-std::vector<std::pair<int, int> > samesign::additionalLeptons(const int idx, const float min_lep_pt)
+std::vector<std::pair<int, int> > samesign::additionalLeptons(const int hyp_idx, const float min_lep_pt)
 {
     using namespace tas;
 
     std::vector<unsigned int> el_indices;
     std::vector<unsigned int> mu_indices;
 
-    const int lt_id           = hyp_lt_id().at(idx);
-    const int ll_id           = hyp_ll_id().at(idx);
-    const unsigned int lt_idx = hyp_lt_index().at(idx);
-    const unsigned int ll_idx = hyp_ll_index().at(idx);
+    const int lt_id           = hyp_lt_id().at(hyp_idx);
+    const int ll_id           = hyp_ll_id().at(hyp_idx);
+    const unsigned int lt_idx = hyp_lt_index().at(hyp_idx);
+    const unsigned int ll_idx = hyp_ll_index().at(hyp_idx);
 
     (abs(lt_id) == 11) ? el_indices.push_back(lt_idx) : mu_indices.push_back(lt_idx);
     (abs(ll_id) == 11) ? el_indices.push_back(ll_idx) : mu_indices.push_back(ll_idx);
