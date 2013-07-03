@@ -833,12 +833,19 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
         throw std::domain_error("[samesign::passes3rdMuonSelection] ERROR - index is invalid!"); 
     }
 
+    {cout << mus_p4().at(mu_idx).eta() << endl;}
+    {cout << mus_p4().at(mu_idx).pt()  << endl;}
+    {cout << passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT) << endl;}                    
+    {cout << samesign::leptonIsolation(13, mu_idx) << endl;} 
+    {cout << fabs(samesign::leptonD0(13, mu_idx)) << endl;}
+    {cout << fabs(samesign::leptonDz(13, mu_idx)) << endl;}
+
     if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
-    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}                    
-    if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;} 
-    if (samesign::leptonD0(13, mu_idx) > 0.02)                   {return false;}
-    if (samesign::leptonDz(13, mu_idx) > 0.5)                    {return false;}
+    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}
+    if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;}
+    if (fabs(samesign::leptonD0(13, mu_idx)) > 0.02)             {return false;}
+    if (fabs(samesign::leptonDz(13, mu_idx)) > 0.5)              {return false;}
 
     // if we're here, return true
     return true;
@@ -896,11 +903,11 @@ bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float mi
     }
 
     // electron selections
-    if (fabs(els_p4().at(el_idx).eta()) > 2.4)                                                   {return false;}
-    if (fabs(els_p4().at(el_idx).pt()) < min_lep_pt)                                             {return false;}
-    if (samesign::leptonIsolation(11, el_idx) > 0.15)                                            {return false;} 
-    if (samesign::leptonD0(11, el_idx) > 0.02)                                                   {return false;}
-    if (samesign::leptonDz(11, el_idx) > 0.2)                                                    {return false;}
+    if (fabs(els_p4().at(el_idx).eta()) > 2.4)        {return false;}
+    if (fabs(els_p4().at(el_idx).pt()) < min_lep_pt)  {return false;}
+    if (samesign::leptonIsolation(11, el_idx) > 0.15) {return false;} 
+    if (fabs(samesign::leptonD0(11, el_idx)) > 0.02)  {return false;}
+    if (fabs(samesign::leptonDz(11, el_idx)) > 0.2)   {return false;}
 
     // if we're here, return true
     return true;
@@ -944,6 +951,7 @@ bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float m
     // muon selections
     if (abs(lep_id)==13)
     {
+        cout << "calling 3rd muon selection" << endl;
         if (not passes3rdMuonSelection(lep_idx, min_lep_pt)) {return false;}
     }
 
