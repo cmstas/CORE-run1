@@ -844,10 +844,25 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
     return true;
 }
 
+
+// POG medium working point with pt > 10 and |eta| < 2.4
+static const cuts_t electronSelection_pog_medium =
+    ELEETA_240              |  // |eta| < 2.40 
+    ELEPT_010               |  // Pt > 10
+    ELE_NOT_TRANSITION      |  // SC |eta| < 1.4442 OR SC |eta| > 1.556 (veto transition region)
+    (1ll<<ELEID_WP2012_MEDIUM_NOISO);
+
+// POG loose working point with pt > 10 and |eta| < 2.4
+static const cuts_t electronSelection_pog_loose =
+    ELEETA_240              |  // |eta| < 2.40 
+    ELEPT_010               |  // Pt > 10
+    ELE_NOT_TRANSITION      |  // SC |eta| < 1.4442 OR SC |eta| > 1.556 (veto transition region)
+    (1ll<<ELEID_WP2012_LOOSE_NOISO);
+
 // does it pass the 3rd electron selection (no overlap removal)
 // POG ID loose working point
 // https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification
-bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float min_lep_pt)
+bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float min_lep_pt, const bool use_el_eta)
 {
     using namespace tas;
 
@@ -857,11 +872,32 @@ bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float mi
         throw std::domain_error("[samesign::passes3rdElectronSelection] ERROR - index is invalid!"); 
     }
 
+
+    // electron ID
+    if (use_el_eta)  // use el->eta() to determine endcap vs barrel
+    {
+        cuts_t cuts_passed = electronSelection(el_idx, /*applyAlignmentCorrection=*/false, /*removedEtaCutInEndcap=*/false, /*useGsfTrack=*/true); 
+        electronIdComponent_t wp2012_loose_bits = electronId_WP2012_noIso_useElEtaForIsEB(el_idx, LOOSE);
+        if ((wp2012_loose_bits & PassWP2012CutsNoIso) == PassWP2012CutsNoIso) 
+        {
+            cuts_passed |= (1ll<<ELEID_WP2012_LOOSE_NOISO);
+        }
+        if ((cuts_passed & electronSelection_pog_loose) != electronSelection_pog_loose) 
+        {
+            return false;
+        }
+    }
+    else  // use el->isEB() to determine endcap vs barrel
+    {
+        if (!pass_electronSelection(el_idx, electronSelection_pog_loose, false, false))
+        {
+            return false;
+        }
+    }
+
     // electron selections
     if (fabs(els_p4().at(el_idx).eta()) > 2.4)                                                   {return false;}
     if (fabs(els_p4().at(el_idx).pt()) < min_lep_pt)                                             {return false;}
-    if (not electronId_WP2012_v3(el_idx, MEDIUM))                                                {return false;}                    
-    if (1.4442 < fabs(cms2.els_etaSC().at(el_idx)) && fabs(cms2.els_etaSC().at(el_idx)) < 1.566) {return false;} 
     if (samesign::leptonIsolation(11, el_idx) > 0.15)                                            {return false;} 
     if (samesign::leptonD0(11, el_idx) > 0.02)                                                   {return false;}
     if (samesign::leptonDz(11, el_idx) > 0.2)                                                    {return false;}
@@ -878,6 +914,7 @@ bool electronOverlapsMuon(const LorentzVector& el_p4)
     for (size_t midx = 0; midx < mus_p4().size(); midx++)
     {
         if (not passes3rdMuonSelection(midx, /*min_pt=*/10.0)) {continue;   }
+        const float dr = DeltaR(el_p4, mus_p4().at(midx));
         if (DeltaR(el_p4, mus_p4().at(midx)) < 0.1)            {return true;}
     }
 
@@ -901,8 +938,8 @@ bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float m
     // https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification
     if (abs(lep_id)==11)
     {
-        if (not passes3rdElectronSelectionNoOverlapRemoval(lep_idx, min_lep_pt)) {return false;}
-        if (electronOverlapsMuon(els_p4().at(lep_idx)))                          {return false;} 
+        if (not passes3rdElectronSelectionNoOverlapRemoval(lep_idx, min_lep_pt, /*use_el_eta=*/true)) {return false;}
+        if (electronOverlapsMuon(els_p4().at(lep_idx)))                                               {return false;} 
     }
 
     // muon selections
