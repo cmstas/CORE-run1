@@ -914,7 +914,6 @@ bool electronOverlapsMuon(const LorentzVector& el_p4)
     for (size_t midx = 0; midx < mus_p4().size(); midx++)
     {
         if (not passes3rdMuonSelection(midx, /*min_pt=*/10.0)) {continue;   }
-        const float dr = DeltaR(el_p4, mus_p4().at(midx));
         if (DeltaR(el_p4, mus_p4().at(midx)) < 0.1)            {return true;}
     }
 
