@@ -833,12 +833,12 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
         throw std::domain_error("[samesign::passes3rdMuonSelection] ERROR - index is invalid!"); 
     }
 
-    {cout << mus_p4().at(mu_idx).eta() << endl;}
-    {cout << mus_p4().at(mu_idx).pt()  << endl;}
-    {cout << passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT) << endl;}                    
-    {cout << samesign::leptonIsolation(13, mu_idx) << endl;} 
-    {cout << fabs(samesign::leptonD0(13, mu_idx)) << endl;}
-    {cout << fabs(samesign::leptonDz(13, mu_idx)) << endl;}
+//     {cout << mus_p4().at(mu_idx).eta() << endl;}
+//     {cout << mus_p4().at(mu_idx).pt()  << endl;}
+//     {cout << passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT) << endl;}                    
+//     {cout << samesign::leptonIsolation(13, mu_idx) << endl;} 
+//     {cout << fabs(samesign::leptonD0(13, mu_idx)) << endl;}
+//     {cout << fabs(samesign::leptonDz(13, mu_idx)) << endl;}
 
     if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
@@ -951,7 +951,7 @@ bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float m
     // muon selections
     if (abs(lep_id)==13)
     {
-        cout << "calling 3rd muon selection" << endl;
+//         cout << "calling 3rd muon selection" << endl;
         if (not passes3rdMuonSelection(lep_idx, min_lep_pt)) {return false;}
     }
 
