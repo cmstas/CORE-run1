@@ -834,9 +834,6 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
         throw std::domain_error("[samesign::passes3rdMuonSelection] ERROR - index is invalid!"); 
     }
     
-    const float chi2ndof = mus_gfit_chi2().at(mu_idx)/mus_gfit_ndof().at(mu_idx);
-    const int ctf_idx    = cms2.mus_trkidx().at(mu_idx);
-
     if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
     if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}
