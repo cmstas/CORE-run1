@@ -1026,7 +1026,7 @@ bool passes_muid_wp2012(const unsigned int index, const mu2012_tightness::value_
 
                 const float d0       = trks_d0_pv(ctfidx, vtxidx).first;
                 const float dz       = trks_dz_pv(ctfidx, vtxidx).first;
-                const float chi2ndof = mus_gfit_chi2().at(mu_idx)/mus_gfit_ndof().at(mu_idx);
+                const float chi2ndof = mus_gfit_chi2().at(index)/mus_gfit_ndof().at(index);
 
                 if (not is_global)                                {return false;} // The candidate is reconstructed as a Global Muon
                 if (not is_pfmu)                                  {return false;} // Particle-Flow muon id 
