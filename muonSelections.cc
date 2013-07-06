@@ -994,44 +994,59 @@ float muonIsoValuePF2012_deltaBeta(unsigned int imu)
     return (absiso / pt);
 }
 
-bool passes_muid_wp2012 (const unsigned int index, const mu2012_tightness::value_type tightness)
+// muon POG selections:
+bool passes_muid_wp2012(const unsigned int index, const mu2012_tightness::value_type tightness)
 {
-    const bool is_global  = ((cms2.mus_type().at(index) & (1<<1)) != 0);
-    const bool is_tracker = ((cms2.mus_type().at(index) & (1<<2)) != 0);
-    const bool is_pfmu    = ((cms2.mus_type().at(index) & (1<<5)) != 0);
+    using namespace tas;
 
-    const int vtxidx = firstGoodVertex();
+    const bool is_global  = ((mus_type().at(index) & (1<<1)) != 0);
+    const bool is_tracker = ((mus_type().at(index) & (1<<2)) != 0);
+    const bool is_pfmu    = ((mus_type().at(index) & (1<<5)) != 0);
 
-    switch (tightness) {
-        
-    case mu2012_tightness::LOOSE: {
-        if (!is_pfmu) return false;
-        if (!is_global && !is_tracker) return false;      
-        return true;
-		}
-		break;
+    switch (tightness) 
+    {
+        // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Loose_Muon
+        case mu2012_tightness::LOOSE: 
+            {
+                if (not is_pfmu)              {return false;}
+                if (is_global && !is_tracker) {return false;}     
 
-    case mu2012_tightness::TIGHT: {
-        if (!is_global) return false;
-        if (!is_pfmu) return false;
-        if (cms2.mus_gfit_validSTAHits().at(index) < 1) return false;
-        if (cms2.mus_numberOfMatchedStations().at(index) < 2) return false;
+                // if we're here, then it passes
+                return true;
+            }
+            break;
 
-        const int ctfidx = cms2.mus_trkidx().at(index);
-        if (ctfidx < 0 || vtxidx < 0) return false;
-        const std::pair<double, double> cord0 = trks_d0_pv(ctfidx, vtxidx);
-        const std::pair<double, double> cordz = trks_dz_pv(ctfidx, vtxidx);
-        if (fabs(cord0.first) > 0.2) return false;
-        if (fabs(cordz.first) > 0.5) return false;
-        if (cms2.trks_valid_pixelhits().at(ctfidx) < 1) return false;
-        if (cms2.trks_nlayers().at(ctfidx) < 6) return false;
-        return true;
-		}
-		break;
+        // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon
+        case mu2012_tightness::TIGHT:
+            {
+                // event has a good vertex and muon has associated ctf track
+                const int ctfidx = mus_trkidx().at(index);
+                const int vtxidx = firstGoodVertex();
+                if (ctfidx < 0 || vtxidx < 0)  {return false;}
 
-	default: {/*do nothing*/}
+                const float d0       = trks_d0_pv(ctfidx, vtxidx).first;
+                const float dz       = trks_dz_pv(ctfidx, vtxidx).first;
+                const float chi2ndof = mus_gfit_chi2().at(mu_idx)/mus_gfit_ndof().at(mu_idx);
+
+                if (not is_global)                                {return false;} // The candidate is reconstructed as a Global Muon
+                if (not is_pfmu)                                  {return false;} // Particle-Flow muon id 
+                if (chi2ndof >= 10)                               {return false;} // χ2/ndof of the global-muon track fit < 10
+                if (mus_numberOfMatchedStations().at(index) <= 1) {return false;} // Muon segments in at least two muon stations
+                if (mus_gfit_validSTAHits().at(index) <= 0)       {return false;} // At least one muon chamber hit included in the global-muon track fit 
+                if (fabs(d0) > 0.2)                               {return false;} // Its tracker track has transverse impact parameter dxy < 2 mm w.r.t. the primary vertex
+                if (fabs(dz) > 0.5)                               {return false;} // The longitudinal distance of the tracker track wrt. the primary vertex is dz < 5 mm
+                if (trks_valid_pixelhits().at(ctfidx) <= 0)       {return false;} // Number of pixel hits > 0
+                if (trks_nlayers().at(ctfidx) <= 5)               {return false;} // Cut on number of tracker layers with hits > 5
+
+                // if we're here, then it passes
+                return true;
+            }
+            break;
+
+        default: {/*do nothing*/}
     } // end switch block
 
+    // if we're here, then return false
     return false;
 }
 

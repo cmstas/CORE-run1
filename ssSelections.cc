@@ -839,12 +839,8 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
 
     if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
-    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}  // this is not complete
-    if (chi2ndof >= 10)                                          {return false;}
-    if (trks_nlayers().at(ctf_idx) < 9)                          {return false;}
+    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}
     if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;}
-    if (fabs(samesign::leptonD0(13, mu_idx)) > 0.02)             {return false;}
-    if (fabs(samesign::leptonDz(13, mu_idx)) > 0.5)              {return false;}
 
     // if we're here, return true
     return true;
