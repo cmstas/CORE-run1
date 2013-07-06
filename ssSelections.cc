@@ -823,6 +823,7 @@ bool samesign::makesExtraGammaStar(int idx, bool apply_id_iso) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 // does it pass the 3rd muon selection
+// https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Tight_Muon_selection
 bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
 {
     using namespace tas;
@@ -832,17 +833,15 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
     {
         throw std::domain_error("[samesign::passes3rdMuonSelection] ERROR - index is invalid!"); 
     }
-
-//     {cout << mus_p4().at(mu_idx).eta() << endl;}
-//     {cout << mus_p4().at(mu_idx).pt()  << endl;}
-//     {cout << passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT) << endl;}                    
-//     {cout << samesign::leptonIsolation(13, mu_idx) << endl;} 
-//     {cout << fabs(samesign::leptonD0(13, mu_idx)) << endl;}
-//     {cout << fabs(samesign::leptonDz(13, mu_idx)) << endl;}
+    
+    const float chi2ndof = mus_gfit_chi2().at(mu_idx)/mus_gfit_ndof().at(mu_idx);
+    const int ctf_idx    = cms2.mus_trkidx().at(mu_idx);
 
     if (fabs(mus_p4().at(mu_idx).eta()) > 2.4)                   {return false;}
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
-    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}
+    if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}  // this is not complete
+    if (chi2ndof >= 10)                                          {return false;}
+    if (trks_nlayers().at(ctf_idx) < 9)                          {return false;}
     if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;}
     if (fabs(samesign::leptonD0(13, mu_idx)) > 0.02)             {return false;}
     if (fabs(samesign::leptonDz(13, mu_idx)) > 0.5)              {return false;}
@@ -859,12 +858,14 @@ static const cuts_t electronSelection_pog_medium =
     ELE_NOT_TRANSITION      |  // SC |eta| < 1.4442 OR SC |eta| > 1.556 (veto transition region)
     (1ll<<ELEID_WP2012_MEDIUM_NOISO);
 
+
 // POG loose working point with pt > 10 and |eta| < 2.4
 static const cuts_t electronSelection_pog_loose =
     ELEETA_240              |  // |eta| < 2.40 
     ELEPT_010               |  // Pt > 10
     ELE_NOT_TRANSITION      |  // SC |eta| < 1.4442 OR SC |eta| > 1.556 (veto transition region)
     (1ll<<ELEID_WP2012_LOOSE_NOISO);
+
 
 // does it pass the 3rd electron selection (no overlap removal)
 // POG ID loose working point
@@ -878,7 +879,6 @@ bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float mi
     {
         throw std::domain_error("[samesign::passes3rdElectronSelection] ERROR - index is invalid!"); 
     }
-
 
     // electron ID
     if (use_el_eta)  // use el->eta() to determine endcap vs barrel
@@ -951,7 +951,6 @@ bool passes3rdLeptonSelection(const int lep_id, const int lep_idx, const float m
     // muon selections
     if (abs(lep_id)==13)
     {
-//         cout << "calling 3rd muon selection" << endl;
         if (not passes3rdMuonSelection(lep_idx, min_lep_pt)) {return false;}
     }
 
