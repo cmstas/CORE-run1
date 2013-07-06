@@ -841,6 +841,7 @@ bool passes3rdMuonSelection(const int mu_idx, const float min_lep_pt)
     if (fabs(mus_p4().at(mu_idx).pt()) < min_lep_pt)             {return false;}
     if (not passes_muid_wp2012(mu_idx, mu2012_tightness::TIGHT)) {return false;}
     if (samesign::leptonIsolation(13, mu_idx) > 0.15)            {return false;}
+    if (fabs(samesign::leptonD0(13, mu_idx)) > 0.02)             {return false;} // tighted d0 cut w.r.t POG
 
     // if we're here, return true
     return true;
