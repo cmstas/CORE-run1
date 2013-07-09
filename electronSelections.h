@@ -120,7 +120,7 @@ enum EleSelectionType {
 
   ELECHARGE_NOTFLIP3AGREE,  // Not a charge flip and CTF, GSF, and Pixel-SuperCluster charges agree
 
-  ELE_NOT_TRANSITION,       // SC |eta| < 1.4442 OR SC |eta| > 1.556 (veto transition region)
+  ELE_NOT_TRANSITION,       // SC |eta| < 1.4442 OR SC |eta| > 1.566 (veto transition region)
  
   //*************************************************************************************//
   // This is the last enumerator element                                                 //
