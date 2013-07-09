@@ -866,10 +866,8 @@ bool passes3rdElectronSelectionNoOverlapRemoval(const int el_idx, const float mi
     // electron selections
     if (fabs(els_p4().at(el_idx).eta()) > 2.4)                                         {return false;}
     if (fabs(els_p4().at(el_idx).pt()) < min_lep_pt)                                   {return false;}
-    if (1.4442 < fabs(els_etaSC().at(el_idx)) && fabs(els_etaSC().at(el_idx)) < 1.556) {return false;}
+    if (1.4442 < fabs(els_etaSC().at(el_idx)) && fabs(els_etaSC().at(el_idx)) < 1.566) {return false;}
     if (samesign::leptonIsolation(11, el_idx) > 0.15)                                  {return false;} 
-    if (fabs(samesign::leptonD0(11, el_idx)) > 0.02)                                   {return false;}
-    if (fabs(samesign::leptonDz(11, el_idx)) > 0.2)                                    {return false;}
 
     // if we're here, return true
     return true;
