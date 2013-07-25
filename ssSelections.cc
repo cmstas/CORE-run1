@@ -2500,7 +2500,7 @@ void samesign::smearJETScaleJetsMetHt
 
 
 // semar JER for jets
-void samesign::smearJETScaleJets(std::vector<LorentzVector>& vjets_p4, const unsigned int seed)
+void samesign::smearJETScaleJets(std::vector<LorentzVector>& vjets_p4, const unsigned int seed, float min_pt)
 {
     static TRandom3 random(seed);
 
@@ -2518,7 +2518,7 @@ void samesign::smearJETScaleJets(std::vector<LorentzVector>& vjets_p4, const uns
         LorentzVector new_jet_p4    = (jet_p4 * jet_rescaled);
 
         // check that the new jets pass the min pt cut
-        if (new_jet_p4.pt() < 40.0)
+        if (new_jet_p4.pt() < min_pt)
         {
             continue;
         }

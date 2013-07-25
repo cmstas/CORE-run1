@@ -334,7 +334,7 @@ namespace samesign
     // 2012 rescale the jet energy resolution (JER) 
     ///////////////////////////////////////////////////////////////////////////////////////////
     void smearJETScaleJetsMetHt(std::vector<LorentzVector>& vjets_p4, float& met, float& met_phi, float& ht, const unsigned int seed);
-    void smearJETScaleJets(std::vector<LorentzVector>& vjets_p4, const unsigned int seed);
+    void smearJETScaleJets(std::vector<LorentzVector>& vjets_p4, const unsigned int seed, float min_pt = 40.0);
     void smearJETScaleJetsMetHt
     (
         std::vector<LorentzVector>& vjets_p4, 
