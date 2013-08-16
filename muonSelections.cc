@@ -12,9 +12,9 @@
 #include "eventSelections.h"
 #include "trackSelections.h"
 #include "CMS2.h"
-//#include "ssSelections.h"
 
 using namespace tas;
+using namespace std;
 
 ////////////////////
 // Identification //
@@ -451,8 +451,8 @@ bool muonIdNotIsolated(unsigned int index, SelectionType type) {
         // if there isn't a good vertex, use the beamSpot
         if (trkidx < 0)                                                          return false; // require a matching track
         if (vtxidx < 0 || trkidx < 0) {
-	  cout << __FILE__ << " " << __LINE__ << endl;
-	  cout << "WARNING: didn't find any good vertices, should never get here" << endl;
+	        std::cout << __FILE__ << " " << __LINE__ << std::endl;
+	        std::cout << "WARNING: didn't find any good vertices, should never get here" << std::endl;
 
             if (fabs(cms2.mus_d0corr().at(index)) > 0.02) return false;
             if (fabs(cms2.mus_z0corr().at(index)) > 0.5)  return false;
@@ -666,7 +666,7 @@ double muonIsoValuePF( unsigned int imu, unsigned int ivtx, float coner, float m
         if (cms2.mus_iso04_pf().at(imu)<-99.) return 9999.;
         return cms2.mus_iso04_pf().at(imu)/cms2.mus_p4().at(imu).pt();
     } else {
-        cout << "muonIsoValuePF: CONE SIZE NOT SUPPORTED" << endl;
+        std::cout << "muonIsoValuePF: CONE SIZE NOT SUPPORTED" << std::endl;
         return 9999.;
     }
 }

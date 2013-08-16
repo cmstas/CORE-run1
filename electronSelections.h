@@ -4,6 +4,7 @@
 // C++
 #include <stdint.h>
 #include <vector>
+#include <iostream>
 
 // ROOT
 #include "TMath.h"
@@ -137,6 +138,7 @@ enum EleSelectionType {
 // For the bitmasks to work, N must be <= 63
 static bool shown = true;
 inline void checkElectronSelections(void){
+  using namespace std;
   int n    = (int) EleSelectionType(ELE_LAST);
   int nMax = (int) 8*sizeof(1ll) - 1;
   if( n > nMax ){

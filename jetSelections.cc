@@ -1,4 +1,4 @@
-// $Id: jetSelections.cc,v 1.41 2013/05/26 18:55:24 fgolf Exp $
+// $Id: jetSelections.cc,v 1.42 2013/08/11 20:01:47 kelley Exp $
 
 #include <algorithm>
 #include <utility>
@@ -488,8 +488,8 @@ float pfjet_beta(int ijet, int power , float dzcut , int ivtx , bool verbose ) {
     int ican = cands[ivc];
 
     if( ican > static_cast<int>(cms2.pfcands_charge().size()) ){
-      cout << __FILE__ << " " << __LINE__ << " ERROR! ican, numCandidates " << ican << ", " << cms2.pfcands_charge().size() << endl;
-      return -3.0;
+        std::cout << __FILE__ << " " << __LINE__ << " ERROR! ican, numCandidates " << ican << ", " << cms2.pfcands_charge().size() << std::endl;
+        return -3.0;
     }
 
     //--------------------
@@ -505,12 +505,12 @@ float pfjet_beta(int ijet, int power , float dzcut , int ivtx , bool verbose ) {
     int itrk = cms2.pfcands_trkidx().at(ican);
     
     if( itrk >= (int) cms2.trks_trk_p4().size() || itrk < 0 ){
-      if( verbose ){
-	std::cout << __FILE__ << " " << __LINE__ << " WARNING! skipping electron with pt " << cms2.pfcands_p4().at(ican).pt() << endl;
-      }
-      //note: this should only happen for electrons which do not have a matched track
-      //currently we are just ignoring these guys
-      continue;
+        if( verbose ){
+            std::cout << __FILE__ << " " << __LINE__ << " WARNING! skipping electron with pt " << cms2.pfcands_p4().at(ican).pt() << std::endl;
+        }
+        //note: this should only happen for electrons which do not have a matched track
+        //currently we are just ignoring these guys
+        continue;
     }
     
     //-------------------------------------------------------------------

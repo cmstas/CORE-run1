@@ -59,7 +59,7 @@ bool passSimpleSUSYTrigger_v1( bool isData );
 /*****************************************************************************************/
 //hypothesis disambiguation. Returns the hypothesis that has mass closest to MZ
 /*****************************************************************************************/
-unsigned int selectBestZHyp(const vector<unsigned int> &v_goodHyps);
+unsigned int selectBestZHyp(const std::vector<unsigned int> &v_goodHyps);
 
 /*****************************************************************************************/
 //generalized Z veto

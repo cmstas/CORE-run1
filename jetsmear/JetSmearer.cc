@@ -1,10 +1,11 @@
-
 #include "JetSmearer.h"
 #include "JetResolution.h"
 #include "../CMS2.h"
 #include "TString.h"
 #include "TObjArray.h"
 #include "TF1.h"
+
+using namespace std;
 
 void JetSmearer::setDeltaR (double dr) {
     

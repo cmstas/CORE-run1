@@ -18,7 +18,7 @@ JetSmearer* makeJetSmearer(const char* ptFileName, const char* phiFileName, cons
 
 JetSmearer* makeJetSmearer(std::vector<std::string> &vector_of_file_names)
 {
-    vector<std::string> vParam;
+    std::vector<std::string> vParam;
     for (std::vector<std::string>::const_iterator i = vector_of_file_names.begin(), i_end = vector_of_file_names.end(); i != i_end; ++i) {
         // do some rigmarole to evaluate env variables in the strings
         // std::cout << "file name: " << *i << std::endl;

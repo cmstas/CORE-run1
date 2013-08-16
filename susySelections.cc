@@ -16,6 +16,7 @@
 #include "mcSelections.h"
 
 using namespace tas;
+using namespace std;
 using namespace wp2012;
 
 //--------------------------------------------------------------------------------
@@ -525,7 +526,7 @@ int leptonOrTauIsFromW(int idx, int id, bool alsoSusy) {
 /*****************************************************************************************/
 void printEventInfo(){
   //cout << cms2.evt_dataset() << endl;
-  cout << cms2.evt_run() << " " << cms2.evt_lumiBlock() << " " << cms2.evt_event() << endl;
+  std::cout << cms2.evt_run() << " " << cms2.evt_lumiBlock() << " " << cms2.evt_event() << std::endl;
 }
 
 
@@ -684,13 +685,13 @@ int passTriggerPrescale(const char* arg){
   TString HLTTrigger = triggerName( HLTTriggerPattern );
 
   //Return -1 if no matching trigger found
-  if( HLTTrigger.Contains("TRIGGER_NOT_FOUND") )  return -1;
+  if (HLTTrigger.Contains("TRIGGER_NOT_FOUND") )  return -1;
  
   //Return 0 if trigger didn't pass
-  if( !passHLTTrigger( HLTTrigger ) ) return 0;
+  if (!passHLTTrigger(HLTTrigger)) return 0;
 
   //Return 1 if trigger passes and is unprescaled
-  if( passUnprescaledHLTTrigger( HLTTrigger ) ) return 1;
+  if( passUnprescaledHLTTrigger(HLTTrigger)) return 1;
 
   //Return prescale if prescaled trigger passes
   return HLT_prescale( HLTTrigger );
@@ -1240,7 +1241,7 @@ bool passSUSYTrigger_v1( bool isData , int hypType ) {
   }
   
   else{
-    cout << "ERROR: unrecognized hyptype " << hypType << ", quitting" << endl;
+    std::cout << "ERROR: unrecognized hyptype " << hypType << ", quitting" << std::endl;
     exit(0);
   }
 

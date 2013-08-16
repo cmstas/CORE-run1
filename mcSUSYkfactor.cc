@@ -1,3 +1,5 @@
+#include "mcSelections.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <set>
@@ -14,9 +16,7 @@
 #include "TAxis.h"
 #include <iostream>
 
-#include "mcSelections.h"
-//#include "CMS2.cc"
-
+using namespace std;
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 

@@ -1,12 +1,19 @@
+// C++ Includes
 #include <assert.h>
 #include <iostream>
 #include <algorithm>
+
+// ROOT Includes
 #include "Math/Point2Dfwd.h"
 #include "Math/LorentzVector.h"
 #include "Math/VectorUtil.h"
 #include "TMath.h"
 #include "TLorentzVector.h"
 #include "TDatabasePDG.h"
+#include "Math/Vector2D.h"
+#include "TRandom3.h"
+
+// CMS2 Includes
 #include "electronSelections.h"
 #include "electronSelectionsParameters.h"
 #include "muonSelections.h"
@@ -21,8 +28,6 @@
 #include "susySelections.h"
 #include "jetcorr/FactorizedJetCorrector.h"
 #include "jetcorr/JetCorrectionUncertainty.h"
-#include "Math/Vector2D.h"
-#include "TRandom3.h"
 
 using namespace wp2012;
 using ROOT::Math::VectorUtil::DeltaR;
@@ -102,7 +107,7 @@ bool samesign::isGoodLepton(int id, int idx, bool use_el_eta)
             {
                 return false;
             }
-            if (abs(cms2.els_p4().at(idx).eta()) < 1.4442)
+            if (fabs(cms2.els_p4().at(idx).eta()) < 1.4442)
             {
                 return (cms2.els_hOverE().at(idx) < 0.10);
             }

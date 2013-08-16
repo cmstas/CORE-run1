@@ -7,6 +7,8 @@
 #include "mcSelections.h"
 #include "Math/LorentzVector.h"
 
+using namespace std;
+
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 
 //-------------------------------------------------

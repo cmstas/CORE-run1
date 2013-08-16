@@ -7,6 +7,8 @@
 #include "CMS2.h"
 #include "Math/VectorUtil.h"
 
+using namespace std;
+
 //--------------------------------------------------
 // EG trigger selection from 5 July 2010
 // data: Photon10 OR Electron 10 OR Photon 15

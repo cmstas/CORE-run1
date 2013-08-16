@@ -16,7 +16,7 @@ typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 /*****************************************************************************************/
 //hypothesis disambiguation. Returns the hypothesis that has the highest sum Pt
 /*****************************************************************************************/
-unsigned int selectHypByHighestSumPt(const vector<unsigned int> &v_goodHyps);
+unsigned int selectHypByHighestSumPt(const std::vector<unsigned int> &v_goodHyps);
 
 
 #endif
