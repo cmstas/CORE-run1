@@ -158,7 +158,11 @@ bool samesign::isGoodLepton(int id, int idx, bool use_el_eta)
 float samesign::leptonD0(const int id, const int idx)
 {
     const int vtxidx = firstGoodVertex();
-    if (vtxidx < 0) {throw std::domain_error("samesign::leptonD0] ERROR - first good vertex index < 0");}
+    if (vtxidx < 0)
+    {
+        cout << "[samesign::leptonD0] WARNING - first good vertex index < 0.  Returning bogus value 999999" << endl;
+        return 999999.0;
+    }
     if (abs(id)==13)
     {
         const int trkidx = cms2.mus_trkidx().at(idx);
@@ -183,7 +187,11 @@ float samesign::leptonD0(const int id, const int idx)
 float samesign::leptonDz(int id, int idx)
 {
     const int vtxidx = firstGoodVertex();
-    if (vtxidx < 0) {throw std::domain_error("samesign::leptonDz] ERROR - first good vertex index < 0");}
+    if (vtxidx < 0)
+    {
+        cout << "[samesign::leptonDz] WARNING - first good vertex index < 0.  Returning bogus value 999999" << endl;
+        return 999999.0;
+    }
     if (abs(id)==13)
     {
         const int trkidx = cms2.mus_trkidx().at(idx);
