@@ -1104,14 +1104,11 @@ bool is_equal(float lhs, float rhs)
 // valid values for conesize is 0.3 and 0.4
 float electronIsoValuePF2012_FastJetEffArea(int index, float conesize, int ivtx){
 
-	// dummy call to suppress warning on unused ivtx (do we even need this?)
-	{ivtx = -9999;}
-
     const float etaAbs = fabs(cms2.els_etaSC()[index]);
     const float pt     = cms2.els_p4()[index].pt();
 
     // get effective area
-	float AEff = -9999.0f;
+	float AEff = -9999.0f * static_cast<float>(ivtx/ivtx); // kludge to suppress warning on unused ivtx (do we even need this?)
 	if      (is_equal(conesize,0.3f)) {AEff = fastJetEffArea03_v1(etaAbs);}
 	else if (is_equal(conesize,0.4f)) {AEff = fastJetEffArea04_v1(etaAbs);}
 	else                              {AEff = fastJetEffArea03_v1(etaAbs);} // default
@@ -1133,14 +1130,11 @@ float electronIsoValuePF2012_FastJetEffArea(int index, float conesize, int ivtx)
 // same as above function, but with updated electron isolation branches toggle
 float electronIsoValuePF2012_FastJetEffArea_v2(int index, float conesize, int ivtx, bool useOldIsolation){
 
-	// dummy call to suppress warning on unused ivtx (do we even need this?)
-	{ivtx = -9999;}
-
     const float etaAbs = fabs(cms2.els_etaSC()[index]);
     const float pt     = cms2.els_p4()[index].pt();
 
     // get effective area
-	float AEff = -9999.0f;
+	float AEff = -9999.0f * static_cast<float>(ivtx/ivtx); // kludge to suppress warning on unused ivtx (do we even need this?)
 	if      (is_equal(conesize,0.3f)) {AEff = fastJetEffArea03_v1(etaAbs);}
 	else if (is_equal(conesize,0.4f)) {AEff = fastJetEffArea04_v1(etaAbs);}
 	else                              {AEff = fastJetEffArea03_v1(etaAbs);} // default
@@ -1162,14 +1156,11 @@ float electronIsoValuePF2012_FastJetEffArea_v2(int index, float conesize, int iv
 // same as above function, but with updated effective areas
 float electronIsoValuePF2012_FastJetEffArea_v3(int index, float conesize, int ivtx, bool useOldIsolation){
 
-	// dummy call to suppress warning on unused ivtx (do we even need this?)
-	{ivtx = -9999;}
-
     const float etaAbs = fabs(cms2.els_etaSC()[index]);
     const float pt     = cms2.els_p4()[index].pt();
 
     // get effective area
-	float AEff = -9999.0f;
+	float AEff = -9999.0f * static_cast<float>(ivtx/ivtx); // kludge to suppress warning on unused ivtx (do we even need this?)
 	if      (is_equal(conesize,0.3f)) {AEff = fastJetEffArea03_v2(etaAbs);}
 	else if (is_equal(conesize,0.4f)) {AEff = fastJetEffArea04_v2(etaAbs);}
 	else                              {AEff = fastJetEffArea03_v2(etaAbs);} // default
@@ -1986,7 +1977,7 @@ void electronIsoValuePF2012reco(float &pfiso_ch, float &pfiso_em, float &pfiso_n
 
 }
 
-float electronRadialIsolation(int index, float &chiso, float &nhiso, float &emiso, float neutral_et_threshold, float cone_size, bool barrelVetoes, bool verbose)
+float electronRadialIsolation(int index, float &chiso, float &nhiso, float &emiso, float neutral_et_threshold, float cone_size, bool barrelVetoes, bool /*verbose -- commented to suppress warning*/)
 {
 
     // isolation sums
@@ -2031,9 +2022,6 @@ float electronRadialIsolation(int index, float &chiso, float &nhiso, float &emis
             if (particleId == 130)      nhiso += cms2.pfcands_p4()[ipf].pt() * (1 - 3*dR) / cms2.els_p4().at(index).pt();
         }
     }
-
-	// dummy assignment to suppress warning for unsused variable (probably should remove but didn't want to break interface)
-	verbose = false;
 
     return (chiso+nhiso+emiso);
 }

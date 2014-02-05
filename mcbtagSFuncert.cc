@@ -152,8 +152,7 @@ double getMaxBtagEta() {return 2.4;}
 // The btag efficiency does not need to be perfect, since it is only used for
 // calculating uncertainties
 double btagEff(double jetpt) {
-  jetpt = -9999; // not used --> suppressing warning
-  return 0.643;
+  return 0.643 * (jetpt/jetpt); // jetpt not used --> suppressing warning
 }
 //------------------------------------------------------------------------
 // Here comes btagEventWeight
