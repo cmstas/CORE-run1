@@ -1062,7 +1062,7 @@ static const electronIdComponent_t PassWP2012CutsIso = ISO;
 
 static const electronIdComponent_t PassWP2012CutsNoIsoNoIP = DETAIN | DPHIIN | SIGMAIETAIETA | HOE 
                                 | OOEMOOP | DZVTX | VTXFIT | MHITS;
-};
+}
 
 
 // master selection function

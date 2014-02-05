@@ -4,21 +4,21 @@
 
 #include <math.h>
 #include <algorithm>
+#include <string>
+#include <utility>
 #include "TMath.h"
 #include "TVector2.h"
+#include "Math/LorentzVector.h"
+#include "Math/VectorUtil.h"
+#include "Math/PtEtaPhiE4D.h"
+#include "Math/LorentzVector.h"
 
 #include "CMS2.h"
 #include "trackSelections.h"
 #include "metSelections.h"
-#include "Math/LorentzVector.h"
-#include "Math/VectorUtil.h"
-
-#include "jetcorr/FactorizedJetCorrector.h"
 #include "jetSelections.h"
 #include "eventSelections.h"
-#include <string>
-#include "Math/PtEtaPhiE4D.h"
-#include "Math/LorentzVector.h"
+#include "jetcorr/FactorizedJetCorrector.h"
 
 //---------------------------------------------
 // function to calculate latest tcMET
@@ -473,8 +473,7 @@ std::pair<float, float> cmsReducedMET_v2(LorentzVector lep1, LorentzVector lep2,
     //float redMETIndminRmet          = sqrt(pow(reducedMETIndminRmet_long, 2) + pow(reducedMETIndminRmet_perp, 2));
     TVector2 redMETIndminRmetxy        = reducedMETIndminRmet_long * a_l + reducedMETIndminRmet_perp * a_t;
 
-    return std::make_pair<float, float> (reducedMETIndminRmet_long, reducedMETIndminRmet_perp);
-
+    return std::make_pair(reducedMETIndminRmet_long, reducedMETIndminRmet_perp);
 }
 
 //-----------------------------------------------------

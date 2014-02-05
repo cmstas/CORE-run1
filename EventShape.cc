@@ -1,6 +1,6 @@
 #include "./EventShape.h"
 
-EventShape::~EventShape(){};
+EventShape::~EventShape(){}
 
 EventShape::EventShape(const std::vector<LorentzVector> & inputVectors) {
 
