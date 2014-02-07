@@ -5,8 +5,8 @@
 
 #include <math.h>
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosHeader/interface/jetsmear/CMS2.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/metSelections.h"
+#include "CMS2/NtupleMacrosHeader/interface/jetsmear/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/metSelections.h"
 #else
 #include "../CMS2.h"
 #include "../metSelections.h"

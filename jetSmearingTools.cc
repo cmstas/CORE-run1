@@ -1,10 +1,10 @@
 #include <iostream>
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/jetSmearingTools.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetSmearer.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/SigInputObj.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetResolution.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSmearingTools.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetSmearer.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/SigInputObj.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
 #else
 #include "jetSmearingTools.h"
 #include "jetsmear/JetSmearer.h"

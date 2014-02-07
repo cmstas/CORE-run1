@@ -81,8 +81,8 @@
 #include <string>
 #include <utility>
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetSmearer.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetSmearer.h"
 #else
 #include "jetcorr/JetCorrectionUncertainty.h"
 #include "jetsmear/JetSmearer.h"

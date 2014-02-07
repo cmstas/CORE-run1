@@ -14,12 +14,12 @@
 #include "Math/LorentzVector.h"
 
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
-#include "CMS2/NtupleMAcrosCore/interface/trackSelections.h"
-#include "CMS2/NtupleMAcrosCore/interface/metSelections.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
-#include "CMS2/NtupleMAcrosCore/interface/eventSelections.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/metSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/FactorizedJetCorrector.h"
 #else
 #include "CMS2.h"
 #include "trackSelections.h"
@@ -33,8 +33,8 @@
 // function to calculate latest tcMET
 //---------------------------------------------
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/tcmet/getTcmetFromCaloMet.icc"
-#include "CMS2/NtupleMAcrosCore/interface/tcmet/getResponseFunction_fit.icc"
+#include "CMS2/NtupleMacrosCore/interface/tcmet/getTcmetFromCaloMet.icc"
+#include "CMS2/NtupleMacrosCore/interface/tcmet/getResponseFunction_fit.icc"
 #else
 #include "tcmet/getTcmetFromCaloMet.icc"
 #include "tcmet/getResponseFunction_fit.icc"

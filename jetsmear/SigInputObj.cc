@@ -1,5 +1,5 @@
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/jetsmear/SigInputObj.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/SigInputObj.h"
 #else
 #include "SigInputObj.h"
 #endif

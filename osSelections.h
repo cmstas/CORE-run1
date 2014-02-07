@@ -5,9 +5,9 @@
 #include <string>
 #include "Math/LorentzVector.h"
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetcorr/FactorizedJetCorrector.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
 #else
 #include "jetSelections.h"
 #include "jetcorr/FactorizedJetCorrector.h"

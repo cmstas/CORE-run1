@@ -1,9 +1,9 @@
 #include <math.h>
 #ifdef CMS2_USE_CMSSW
-// #include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
-#include "CMS2/NtupleMAcrosCore/interface/JetMETUncertainty.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
-#include "CMS2/NtupleMAcrosCore/interface/jetSmearingTools.h"
+// #include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/JetMETUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSmearingTools.h"
 #else
 #include "JetMETUncertainty.h"
 #include "jetcorr/JetCorrectionUncertainty.h"

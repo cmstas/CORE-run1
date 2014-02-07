@@ -2,7 +2,7 @@
 #include "math.h"
 #include "Math/VectorUtil.h"
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/MT2/MT2.h"
+#include "CMS2/NtupleMacrosCore/interface/MT2/MT2.h"
 #else
 #include "MT2.h"
 #endif

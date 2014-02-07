@@ -2,7 +2,7 @@
 #define METSELECTIONS_H
 
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosCore/interface/electronSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelections.h"
 #else
 #include "electronSelections.h"
 #endif

@@ -1,5 +1,5 @@
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
 #include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
 #include "CMS2/NtupleMacrosCore/interface/jetsmear/JetSmearer.h"
 #include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
