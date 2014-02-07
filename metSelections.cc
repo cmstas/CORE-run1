@@ -13,18 +13,32 @@
 #include "Math/PtEtaPhiE4D.h"
 #include "Math/LorentzVector.h"
 
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMAcrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/metSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/eventSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#else
 #include "CMS2.h"
 #include "trackSelections.h"
 #include "metSelections.h"
 #include "jetSelections.h"
 #include "eventSelections.h"
 #include "jetcorr/FactorizedJetCorrector.h"
+#endif
 
 //---------------------------------------------
 // function to calculate latest tcMET
 //---------------------------------------------
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/tcmet/getTcmetFromCaloMet.icc"
+#include "CMS2/NtupleMAcrosCore/interface/tcmet/getResponseFunction_fit.icc"
+#else
 #include "tcmet/getTcmetFromCaloMet.icc"
 #include "tcmet/getResponseFunction_fit.icc"
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PtEtaPhiE4D<float> > LorentzVector2;
 

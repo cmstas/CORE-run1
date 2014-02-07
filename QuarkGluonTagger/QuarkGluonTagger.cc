@@ -1,4 +1,8 @@
-#include "./QuarkGluonTagger.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/QuarkGluonTagger/QuarkGluonTagger.h"
+#else
+#include "QuarkGluonTagger.h"
+#endif
 
 // Liner Radial Momentum taken from http://arxiv.org/abs/1106.3076v2
 

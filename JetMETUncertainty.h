@@ -80,8 +80,13 @@
 #include <vector>
 #include <string>
 #include <utility>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetSmearer.h"
+#else
 #include "jetcorr/JetCorrectionUncertainty.h"
 #include "jetsmear/JetSmearer.h"
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef std::vector<LorentzVector> VofP4s;

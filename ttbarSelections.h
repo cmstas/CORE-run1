@@ -4,9 +4,7 @@
 #include <vector>
 #include "Math/LorentzVector.h"
 
-
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
-
 
 ///******************************************************************************************/     
 ////return the MET and the MET phi, correcting for mus that are not corrected for by default

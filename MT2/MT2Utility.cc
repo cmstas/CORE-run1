@@ -32,7 +32,11 @@
               
 #include <iostream>
 #include <math.h>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/MT2/MT2Utility.h"
+#else
 #include "MT2Utility.h"
+#endif
 
 using namespace std;
 

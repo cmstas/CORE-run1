@@ -1,9 +1,13 @@
 #ifndef JETSMEARINGTOOLS_H
 #define JETSMEARINGTOOLS_H
 
-#include "CMS2.h"
 #include <vector>
 #include <utility>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
+#else
+#include "CMS2.h"
+#endif
 
 // function to smear jet energy to account for differences in data-MC JER
 class JetSmearer;

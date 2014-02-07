@@ -1,7 +1,11 @@
-#include "MT2.h"
+#include <iostream>
 #include "math.h"
 #include "Math/VectorUtil.h"
-#include "iostream"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/MT2/MT2.h"
+#else
+#include "MT2.h"
+#endif
 
 using namespace std;
 

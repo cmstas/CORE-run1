@@ -5,18 +5,25 @@
 #include "TMath.h"
 #include "TLorentzVector.h"
 #include "TDatabasePDG.h"
+
+
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelectionsParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/metSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/triggerUtils.h"
+#include "CMS2/NtupleMacrosCore/interface/ttbarSelections.h"
+#else
+#include "CMS2.h"
+#include "ttbarSelections.h"
 #include "electronSelections.h"
 #include "electronSelectionsParameters.h"
 #include "muonSelections.h"
 #include "metSelections.h"
-
-
-
-
 #include "triggerUtils.h"
-#include "CMS2.h"
-
-#include "ttbarSelections.h"
+#endif
 
 using namespace tas;
 

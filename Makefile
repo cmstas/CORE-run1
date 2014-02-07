@@ -3,15 +3,20 @@ include Makefile.arch
 # ----------------------------------------------------------------------- #
 # stuff to make
 # ----------------------------------------------------------------------- #
-SOURCES := $(wildcard *.cc) $(wildcard jetsmear/*.cc) $(wildcard MT2/*.cc)
+SOURCES := $(wildcard *.cc)                  \
+           $(wildcard tcmet/*.cc)            \
+           $(wildcard QuarkGluonTagger/*.cc) \
+		   $(wildcard jetcorr/*.cc)          \
+		   $(wildcard jetsmear/*.cc)         \
+		   $(wildcard MT2/*.cc)
 OBJECTS := $(SOURCES:.cc=.o)
 DEPS    := $(SOURCES:.cc=.d)
-LIB     := libCMS2NtupleMacrosCORE.so
+LIBS    := libCMS2NtupleMacrosCORE.so
 
 # ----------------------------------------------------------------------- #
 # how to make it
 # ----------------------------------------------------------------------- #
-$(LIB): $(OBJECTS) 
+$(LIBS): $(OBJECTS) 
 	$(LD) $(LDFLAGS) $(SOFLAGS) $(OBJECTS) $(ROOTLIBS) -o $@
 
 %.o: %.cc
@@ -21,7 +26,15 @@ $(LIB): $(OBJECTS)
 # target to build
 # ----------------------------------------------------------------------- #
 .PHONY: all
-all: $(DEPS) $(LIB)
+all: $(DEPS) $(LIBS)
+
+# for troubleshooting
+.PHONY: test
+test: 
+	@echo SOURCES = $(SOURCES)
+	@echo OBJECTS = $(OBJECTS)
+	@echo LIBS    = $(LIBS)
+	@echo DEPS    = $(DEPS)
 
 # ----------------------------------------------------------------------- #
 # clean target
@@ -29,11 +42,9 @@ all: $(DEPS) $(LIB)
 .PHONY: clean
 clean:
 	@echo "removed object and shared object files"
-	@rm -f *.o
-	@rm -f jetsmear/*.o
-	@rm -f MT2/*.o
-	@rm -f *.d
-	@rm -f *.so
+	@find . -name "*.o"  | xargs -I {} rm {}
+	@find . -name "*.d"  | xargs -I {} rm {}
+	@find . -name "*.so" | xargs -I {} rm {}
 
 # ----------------------------------------------------------------------- #
 # check dependencies

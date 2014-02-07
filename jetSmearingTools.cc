@@ -1,9 +1,17 @@
-#include "jetSmearingTools.h"
 #include <iostream>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/jetSmearingTools.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetSmearer.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/SigInputObj.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/JetResolution.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
+#else
+#include "jetSmearingTools.h"
 #include "jetsmear/JetSmearer.h"
 #include "jetsmear/SigInputObj.h"
 #include "jetsmear/JetResolution.h"
 #include "jetSelections.h"
+#endif
 
 // function to smear jet energy to account for differences in data-MC JER
 JetSmearer* makeJetSmearer(const char* ptFileName, const char* phiFileName, const char* resFileName)

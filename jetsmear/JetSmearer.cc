@@ -1,13 +1,13 @@
 #ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosHeader/interface/CMS2.h"
 #include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
-#include "CMS2/NtupleMacrosCore/interface/jetsmear/SigInputObj.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetSmearer.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
 #else
-#include "JetResolution.h"
-#include "SigInputObj.h"
-#endif
 #include "../CMS2.h"
 #include "JetSmearer.h"
 #include "JetResolution.h"
+#endif
 #include "TString.h"
 #include "TObjArray.h"
 #include "TF1.h"

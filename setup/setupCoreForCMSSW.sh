@@ -68,18 +68,18 @@ create_header_ln triggerUtils.h
 create_header_ln utilities.h
 create_header_ln jetSelections.h
 create_header_ln metSelections.h
-# create_header_ln ttbarSelections.h
-# create_header_ln photonSelections.h
-# create_header_ln jetSmearingTools.h
-# create_header_ln osSelections.h
-# create_header_ln ttvSelections.h
-# create_header_ln ssSelections.h
-# create_header_ln JetMETUncertainty.h
+create_header_ln ttbarSelections.h
+create_header_ln photonSelections.h
+create_header_ln jetSmearingTools.h
+create_header_ln osSelections.h
+create_header_ln ttvSelections.h
+create_header_ln ssSelections.h
+create_header_ln JetMETUncertainty.h
 create_header_ln jetcorr
-# create_header_ln tcmet
-# create_header_ln jetsmear
-# create_header_ln MT2
-# create_header_ln QuarkGluonTagger
+create_header_ln jetsmear
+create_header_ln tcmet
+create_header_ln MT2
+create_header_ln QuarkGluonTagger
 
 # sym link source files
 create_source_ln EventShape.cc
@@ -101,20 +101,20 @@ create_source_ln triggerUtils.cc
 create_source_ln utilities.cc
 create_source_ln jetSelections.cc
 create_source_ln metSelections.cc
-# create_source_ln photonSelections.cc
-# create_source_ln osSelections.cc
-# create_source_ln ttbarSelections.cc
-# create_source_ln ttvSelections.cc
-# create_source_ln ssSelections.cc
-# create_source_ln JetMETUncertainty.cc
-# create_source_ln MT2/MT2.cc
-# create_source_ln MT2/MT2Utility.cc
-# create_source_ln QuarkGluonTagger/QuarkGluonTagger.cc
-# create_source_ln QuarkGluonTagger/QGLikelihoodCalculator.cc
+create_source_ln photonSelections.cc
+create_source_ln osSelections.cc
+create_source_ln ttbarSelections.cc
+create_source_ln ttvSelections.cc
+create_source_ln ssSelections.cc
+create_source_ln JetMETUncertainty.cc
+create_source_ln MT2/MT2.cc
+create_source_ln MT2/MT2Utility.cc
+create_source_ln QuarkGluonTagger/QuarkGluonTagger.cc
+create_source_ln QuarkGluonTagger/QGLikelihoodCalculator.cc
 create_source_ln jetsmear/JetResolution.cc
-# create_source_ln jetsmear/JetSmearer.cc
-# create_source_ln jetsmear/SigInputObj.cc
-# create_source_ln jetSmearingTools.cc
+create_source_ln jetsmear/JetSmearer.cc
+create_source_ln jetsmear/SigInputObj.cc
+create_source_ln jetSmearingTools.cc
 
 popd
 
@@ -136,41 +136,41 @@ echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
 # setup CMS2.h 
 # ------------------------------------------------------------- #
 
-#echo "[setupCoreForCMSSW.sh] creating CMS2.h/cc"
-#
-#header_dir=$CMSSW_BASE/src/CMS2/NtupleMacrosHeader
-#file_name=$1
-#mkdir -p $header_dir
-#mkdir -p $header_dir/interface/dummy_dir # needed for #include "../CMS2.h" :(
-#
-## create the CMS2.cc/h
-#EXE=$core_dir/setup/makeTTreeClassFiles.py
-#cmd="python $EXE --file_name $file_name --use_cmssw --obj_name cms2 --namespace tas --class_name CMS2 --tree_name \"Events\""
-#echo $cmd
-#eval $cmd
-#
-## move CMS2.h
-#echo "[setupCoreForCMSSW.sh] moving CMS2.h to $header_dir/interface"
-#mkdir -p $header_dir/interface
-#mv CMS2.h $header_dir/interface/.
-#
-## move CMS2.cc
-#echo "[setupCoreForCMSSW.sh] moving CMS.cc to $header_dir/src"
-#mkdir -p $header_dir/src
-#mv CMS2.cc $header_dir/src/.
-#
-## setup BuildFile.xml
-#echo "[setupCoreForCMSSW.sh] setting up  $header_dir/BuildFile.xml"
-#echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
-#<use name=\"FWCore/Framework\"/>
-#<use name=\"DataFormats/Common\"/>
-#<use name=\"CMS2/Dictionaries\"/>
-#<use name=\"root\"/>
-#<export>
-#  <use name=\"root\"/>
-#  <use name=\"CMS2/Dictionaries\"/>
-#  <lib name=\"1\"/>
-#</export>" > $header_dir/BuildFile.xml
+echo "[setupCoreForCMSSW.sh] creating CMS2.h/cc"
+
+header_dir=$CMSSW_BASE/src/CMS2/NtupleMacrosHeader
+file_name=$1
+mkdir -p $header_dir
+mkdir -p $header_dir/interface/dummy_dir # needed for #include "../CMS2.h" :(
+
+# create the CMS2.cc/h
+EXE=$core_dir/setup/makeTTreeClassFiles.py
+cmd="python $EXE --file_name $file_name --use_cmssw --obj_name cms2 --namespace tas --class_name CMS2 --tree_name \"Events\""
+echo $cmd
+eval $cmd
+
+# move CMS2.h
+echo "[setupCoreForCMSSW.sh] moving CMS2.h to $header_dir/interface"
+mkdir -p $header_dir/interface
+mv CMS2.h $header_dir/interface/.
+
+# move CMS2.cc
+echo "[setupCoreForCMSSW.sh] moving CMS.cc to $header_dir/src"
+mkdir -p $header_dir/src
+mv CMS2.cc $header_dir/src/.
+
+# setup BuildFile.xml
+echo "[setupCoreForCMSSW.sh] setting up  $header_dir/BuildFile.xml"
+echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
+<use name=\"FWCore/Framework\"/>
+<use name=\"DataFormats/Common\"/>
+<use name=\"CMS2/Dictionaries\"/>
+<use name=\"root\"/>
+<export>
+  <use name=\"root\"/>
+  <use name=\"CMS2/Dictionaries\"/>
+  <lib name=\"1\"/>
+</export>" > $header_dir/BuildFile.xml
 
 # compile 
 # ------------------------------------------------------------- #

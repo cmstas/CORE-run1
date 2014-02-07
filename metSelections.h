@@ -1,7 +1,11 @@
 #ifndef METSELECTIONS_H
 #define METSELECTIONS_H
 
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/electronSelections.h"
+#else
 #include "electronSelections.h"
+#endif
 
 //typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 typedef std::vector<LorentzVector> VofP4;

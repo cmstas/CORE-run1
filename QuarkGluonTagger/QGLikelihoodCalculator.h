@@ -10,16 +10,15 @@
 
 #include <string>
 #include <vector>
-//#include "TFormula.h"
-//#include "../CMS2.h"
-//#include "Math/VectorUtil.h"
-
-#include <vector>
-#include <string>
 #include <utility>
 
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrector.h"
+#else                                     
 #include "../jetcorr/JetCorrectorParameters.h"
 #include "../jetcorr/SimpleJetCorrector.h"
+#endif
 
 class QGLikelihoodCalculator {
 

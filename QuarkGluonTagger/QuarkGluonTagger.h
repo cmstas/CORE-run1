@@ -13,13 +13,18 @@
 #include "TFormula.h"
 
 // CMS2
+
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#include "CMS2/NtupleMacrosCore/interface/QuarkGluonTagger/QGLikelihoodCalculator.h"
+#else                                     
 #include "../CMS2.h"
 #include "../trackSelections.h"
-
-// Header
-#include "QGLikelihoodCalculator.h"
-
 #include "../utilities.h"
+#include "QGLikelihoodCalculator.h"
+#endif
 
 using namespace std;
 using namespace tas;

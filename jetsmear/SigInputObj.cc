@@ -1,5 +1,8 @@
-
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/SigInputObj.h"
+#else
 #include "SigInputObj.h"
+#endif
 
 // -*- C++ -*-
 //

@@ -11,10 +11,14 @@
 #ifndef MT2_H
 #define MT2_H
 
-#include "MT2Utility.h"
 #include "Math/LorentzVector.h"
 #include "TMath.h"
 #include <vector>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/MT2/MT2Utility.h"
+#else
+#include "MT2Utility.h"
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 

@@ -3,7 +3,14 @@
 #ifndef CLEANTCMET_ICC
 #define CLEANTCMET_ICC
 
+#include <math.h>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosHeader/interface/jetsmear/CMS2.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetsmear/metSelections.h"
+#else
+#include "../CMS2.h"
 #include "../metSelections.h"
+#endif
 
 static metStruct cleanTCMETforHFspikes   (float met_x, float met_y, float sumet);
 static metStruct cleanTCMETforHCALnoise  (float met_x, float met_y, float sumet);
@@ -14,9 +21,6 @@ static metStruct cleanTCMETforECALspikes (float met_x, float met_y, float sumet)
 //
 // functions for cleaning tcMET
 //
-
-#include <math.h>
-#include "../CMS2.h"
 
 //------------------------------------------------------
 // function to clean tcMET for HF.

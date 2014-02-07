@@ -1,5 +1,8 @@
-//#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/QuarkGluonTagger/QGLikelihoodCalculator.h"
+#else
 #include "QGLikelihoodCalculator.h"
+#endif
 
 using namespace std;
 
