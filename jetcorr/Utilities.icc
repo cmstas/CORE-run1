@@ -8,12 +8,6 @@
 #include <cmath>
 #include <assert.h>
 
-// #ifdef STANDALONE
-// #include <stdexcept>
-// #else
-// #include "FWCore/Utilities/interface/Exception.h"
-// #endif
-
 namespace 
 {
   void handleError(const std::string& fClass, const std::string& fMessage);

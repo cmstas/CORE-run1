@@ -1,12 +1,17 @@
 // Header
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#else
+#include "CMS2.h"
 #include "utilities.h"
+#endif
 
 // C++ includes
 #include <vector>
 
 // ROOT includes
 #include "Math/VectorUtil.h"
-#include "CMS2.h"
 using std::vector;
 
 //return true if one of the leptons is the same in both hyps

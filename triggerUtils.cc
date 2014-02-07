@@ -3,9 +3,14 @@
 //-------------------------------------------------
 
 #include "TSystem.h"
+#include "Math/VectorUtil.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/triggerUtils.h"
+#else
 #include "triggerUtils.h"
 #include "CMS2.h"
-#include "Math/VectorUtil.h"
+#endif
 
 using namespace std;
 
@@ -60,8 +65,8 @@ LorentzVector p4HLTObject(const char* arg, int objNumber){
  
   TString HLTTrigger( arg );
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -72,7 +77,7 @@ LorentzVector p4HLTObject(const char* arg, int objNumber){
     gSystem->Exit(1);
   }
 
-  int nobj = cms2.hlt_trigObjs_p4().at(trigIndx).size();
+  int nobj = tas::hlt_trigObjs_p4().at(trigIndx).size();
   if (nobj == 0 ) {
     cout << "ERROR: nobj == 0" << endl;
     gSystem->Exit(1);
@@ -83,7 +88,7 @@ LorentzVector p4HLTObject(const char* arg, int objNumber){
     gSystem->Exit(1);
   }
 
-  return cms2.hlt_trigObjs_p4().at(trigIndx).at(objNumber);
+  return tas::hlt_trigObjs_p4().at(trigIndx).at(objNumber);
 
 }
 
@@ -92,8 +97,8 @@ int idHLTObject(const char* arg, int objNumber){
 
   TString HLTTrigger( arg );
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -104,7 +109,7 @@ int idHLTObject(const char* arg, int objNumber){
     gSystem->Exit(1);
   }
 
-  int nobj = cms2.hlt_trigObjs_id().at(trigIndx).size();
+  int nobj = tas::hlt_trigObjs_id().at(trigIndx).size();
   if (nobj == 0 ) {
     cout << "ERROR: nobj == 0" << endl;
     gSystem->Exit(1);
@@ -115,7 +120,7 @@ int idHLTObject(const char* arg, int objNumber){
     gSystem->Exit(1);
   }
 
-  return cms2.hlt_trigObjs_id().at(trigIndx).at(objNumber);
+  return tas::hlt_trigObjs_id().at(trigIndx).at(objNumber);
 
 }
 
@@ -132,12 +137,12 @@ int nHLTObjects(const char* arg ){
   TString HLTTrigger( arg );
 
   // Did the trigger pass?
-  if ( !(cms2.passHLTTrigger(HLTTrigger)) ) return 0;
+  if ( !(tas::passHLTTrigger(HLTTrigger)) ) return 0;
 
   // The trigger passed, see how many associated objects there are
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -148,11 +153,11 @@ int nHLTObjects(const char* arg ){
     return 0;
   }
 
-  int nobj = cms2.hlt_trigObjs_p4().at(trigIndx).size();
+  int nobj = tas::hlt_trigObjs_p4().at(trigIndx).size();
   /*
   for( unsigned int i=0; i < nobj; i++ ){
-    cout << "\t" << i << ", (pt, eta, phi): " << cms2.hlt_trigObjs_p4().at(trigIndx).at(i).pt() << " "
-                  << cms2.hlt_trigObjs_p4().at(trigIndx).at(i).eta() << " " << cms2.hlt_trigObjs_p4().at(trigIndx).at(i).phi() << endl;
+    cout << "\t" << i << ", (pt, eta, phi): " << tas::hlt_trigObjs_p4().at(trigIndx).at(i).pt() << " "
+                  << tas::hlt_trigObjs_p4().at(trigIndx).at(i).eta() << " " << tas::hlt_trigObjs_p4().at(trigIndx).at(i).phi() << endl;
   }
   */
 
@@ -165,10 +170,10 @@ int nHLTObjects(const char* arg ){
 // Utility to print trigger names in the file
 //---------------------------------------------
 void PrintTriggers(){
-  for( unsigned int i = 0; i < cms2.hlt_trigNames().size(); i++ ){
-    cout << cms2.passHLTTrigger(cms2.hlt_trigNames().at(i).Data()) << "\t"
-         << cms2.hlt_prescales().at(i) << "\t" 
-         << cms2.hlt_trigNames().at(i).Data() << endl;
+  for( unsigned int i = 0; i < tas::hlt_trigNames().size(); i++ ){
+    cout << tas::passHLTTrigger(tas::hlt_trigNames().at(i).Data()) << "\t"
+         << tas::hlt_prescales().at(i) << "\t" 
+         << tas::hlt_trigNames().at(i).Data() << endl;
 
   } 
   cout << endl;
@@ -183,12 +188,12 @@ bool passUnprescaledHLTTrigger(const char* arg){
   TString HLTTrigger( arg );
 
   // Did the trigger pass?
-  if ( !(cms2.passHLTTrigger(HLTTrigger)) ) return false;
+  if ( !(tas::passHLTTrigger(HLTTrigger)) ) return false;
 
   // The trigger passed, check the pre-scale
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it   = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it   = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -200,15 +205,15 @@ bool passUnprescaledHLTTrigger(const char* arg){
   }
 
   //sanity check (this should not happen)
-  if( strcmp( arg , cms2.hlt_trigNames().at(trigIndx) ) != 0 ){
+  if( strcmp( arg , tas::hlt_trigNames().at(trigIndx) ) != 0 ){
     cout << "Error! trig names don't match" << endl;
-    cout << "Found trig name " << cms2.hlt_trigNames().at(trigIndx) << endl;
-    cout << "Prescale        " << cms2.hlt_prescales().at(trigIndx) << endl;
+    cout << "Found trig name " << tas::hlt_trigNames().at(trigIndx) << endl;
+    cout << "Prescale        " << tas::hlt_prescales().at(trigIndx) << endl;
     exit(0);
   }
 
   //return true only if pre-scale = 1
-  if( cms2.hlt_prescales().at(trigIndx) == 1 ) return true;
+  if( tas::hlt_prescales().at(trigIndx) == 1 ) return true;
 
   return false;
 
@@ -225,14 +230,14 @@ bool passUnprescaledHLTTrigger(const char* arg, const LorentzVector &obj){
 
   // find the index of this trigger
   int trigIdx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger);
   if(found_it != end_it) trigIdx = found_it - begin_it;
   else return false; // trigger was not found
 
   // get the vector of p4 passing this trigger
-  std::vector<LorentzVector> trigObjs = cms2.hlt_trigObjs_p4()[trigIdx];
+  std::vector<LorentzVector> trigObjs = tas::hlt_trigObjs_p4()[trigIdx];
 
   // if no trigger objects then fail
   if (trigObjs.size() == 0) return false; 
@@ -253,15 +258,15 @@ bool passUnprescaledHLTTrigger(const char* arg, const LorentzVector &obj){
   // the trigger passed, check the pre-scale
 
   //sanity check (this should not happen)
-  if( strcmp( arg , cms2.hlt_trigNames().at(trigIdx) ) != 0 ){
+  if( strcmp( arg , tas::hlt_trigNames().at(trigIdx) ) != 0 ){
     cout << "Error! trig names don't match" << endl;
-    cout << "Found trig name " << cms2.hlt_trigNames().at(trigIdx) << endl;
-    cout << "Prescale        " << cms2.hlt_prescales().at(trigIdx) << endl;
+    cout << "Found trig name " << tas::hlt_trigNames().at(trigIdx) << endl;
+    cout << "Prescale        " << tas::hlt_prescales().at(trigIdx) << endl;
     exit(0);
   }
 
   //return true only if pre-scale = 1
-  if( cms2.hlt_prescales().at(trigIdx) == 1 ) return true;
+  if( tas::hlt_prescales().at(trigIdx) == 1 ) return true;
 
   return false;
 
@@ -276,12 +281,12 @@ int HLT_prescale( const char* arg ){
   TString HLTTrigger( arg );
 
   // Did the trigger pass?
-  if ( !(cms2.passHLTTrigger(HLTTrigger)) ) return -1;
+  if ( !(tas::passHLTTrigger(HLTTrigger)) ) return -1;
 
   // The trigger passed, check the pre-scale
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.hlt_trigNames().begin();
-  vector<TString>::const_iterator end_it   = cms2.hlt_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::hlt_trigNames().begin();
+  vector<TString>::const_iterator end_it   = tas::hlt_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, HLTTrigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -293,15 +298,15 @@ int HLT_prescale( const char* arg ){
   }
 
   //sanity check (this should not happen)
-  if( strcmp( arg , cms2.hlt_trigNames().at(trigIndx) ) != 0 ){
+  if( strcmp( arg , tas::hlt_trigNames().at(trigIndx) ) != 0 ){
     cout << "Error! trig names don't match" << endl;
-    cout << "Found trig name " << cms2.hlt_trigNames().at(trigIndx) << endl;
-    cout << "Prescale        " << cms2.hlt_prescales().at(trigIndx) << endl;
+    cout << "Found trig name " << tas::hlt_trigNames().at(trigIndx) << endl;
+    cout << "Prescale        " << tas::hlt_prescales().at(trigIndx) << endl;
     exit(0);
   }
 
   //return prescale
-  return cms2.hlt_prescales().at(trigIndx);
+  return tas::hlt_prescales().at(trigIndx);
 
 
 }
@@ -315,12 +320,12 @@ int L1_prescale( const char* arg ){
   TString trigger( arg );
 
   // Did the trigger pass?
-  if ( !(cms2.passL1Trigger(trigger)) ) return -1;
+  if ( !(tas::passL1Trigger(trigger)) ) return -1;
 
   // The trigger passed, check the pre-scale
   int trigIndx = -1;
-  vector<TString>::const_iterator begin_it = cms2.l1_trigNames().begin();
-  vector<TString>::const_iterator end_it   = cms2.l1_trigNames().end();
+  vector<TString>::const_iterator begin_it = tas::l1_trigNames().begin();
+  vector<TString>::const_iterator end_it   = tas::l1_trigNames().end();
   vector<TString>::const_iterator found_it = find(begin_it, end_it, trigger );
   if( (found_it != end_it) ){
     trigIndx = found_it - begin_it;
@@ -332,13 +337,13 @@ int L1_prescale( const char* arg ){
   }
 
   //sanity check (this should not happen)
-  if( strcmp( arg , cms2.l1_trigNames().at(trigIndx) ) != 0 ){
+  if( strcmp( arg , tas::l1_trigNames().at(trigIndx) ) != 0 ){
     cout << "Error! trig names don't match" << endl;
-    cout << "Found trig name " << cms2.l1_trigNames().at(trigIndx) << endl;
-    cout << "Prescale        " << cms2.l1_prescales().at(trigIndx) << endl;
+    cout << "Found trig name " << tas::l1_trigNames().at(trigIndx) << endl;
+    cout << "Prescale        " << tas::l1_prescales().at(trigIndx) << endl;
     exit(0);
   }
 
-  return cms2.l1_prescales().at(trigIndx);
+  return tas::l1_prescales().at(trigIndx);
 
 }

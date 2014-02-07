@@ -1,17 +1,20 @@
-// Header
-#include "muonSelections.h"
-#include "eventSelections.h"
-
-// C++ includes
 #include <iostream>
 
 // ROOT includes
 #include "Math/VectorUtil.h"
 
 // CMS2 Includes
-#include "eventSelections.h"
-#include "trackSelections.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#else
 #include "CMS2.h"
+#include "trackSelections.h"
+#include "eventSelections.h"
+#include "muonSelections.h"
+#endif
 
 using namespace tas;
 using namespace std;

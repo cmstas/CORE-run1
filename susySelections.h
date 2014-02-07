@@ -4,6 +4,17 @@
 #include <vector>
 #include "Math/LorentzVector.h"
 #include "muonSelections.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#else
+#include "CMS2.h"
+#include "trackSelections.h"
+#include "eventSelections.h"
+#include "muonSelections.h"
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 
@@ -74,29 +85,29 @@ bool passHLTTriggerPattern(const char* arg);
 int passTriggerPrescale(const char* arg);
 TString triggerName(TString triggerPattern);
 
-bool passElectronSelection_ZMet2012_v1_NoIso(int index , bool vetoTransition=false, bool eta24=false);
-bool passElectronSelection_ZMet2012_v1_Iso(int index   , bool vetoTransition=false, bool eta24=false);
-bool passElectronSelection_ZMet2012_v1(int index       , bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_ZMet2012_v1_NoIso(int  index, bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_ZMet2012_v1_Iso(  int  index, bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_ZMet2012_v1(      int  index, bool vetoTransition=false, bool eta24=false);
 
-bool passElectronSelection_ZMet2012_v2_NoIso(int index , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_ZMet2012_v2_Iso(int index   , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_ZMet2012_v2(int index       , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v2_NoIso(int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v2_Iso(  int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v2(      int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
 
-bool passElectronSelection_ZMet2012_v3_NoIso(int index , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_ZMet2012_v3_Iso(int index   , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_ZMet2012_v3(int index       , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v3_NoIso(int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v3_Iso(  int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_ZMet2012_v3(      int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
 
-bool passElectronSelection_Stop2012_v1_NoIso(int index , bool vetoTransition=false, bool eta24=false);
-bool passElectronSelection_Stop2012_v1_Iso(int index   , bool vetoTransition=false, bool eta24=false);
-bool passElectronSelection_Stop2012_v1(int index       , bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_Stop2012_v1_NoIso(int  index, bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_Stop2012_v1_Iso(  int  index, bool vetoTransition=false, bool eta24=false);
+bool passElectronSelection_Stop2012_v1(      int  index, bool vetoTransition=false, bool eta24=false);
 
-bool passElectronSelection_Stop2012_v2_NoIso(int index , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_Stop2012_v2_Iso(int index   , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_Stop2012_v2(int index       , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v2_NoIso(int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v2_Iso(  int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v2(      int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
 
-bool passElectronSelection_Stop2012_v3_NoIso(int index , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_Stop2012_v3_Iso(int index   , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
-bool passElectronSelection_Stop2012_v3(int index       , bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v3_NoIso(int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v3_Iso(  int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
+bool passElectronSelection_Stop2012_v3(      int  index, bool vetoTransition=false, bool eta24=false, bool useOldIsolation=false);
 
 
 #endif

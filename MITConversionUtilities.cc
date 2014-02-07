@@ -1,5 +1,10 @@
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/MITConversionUtilities.h"
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#else
 #include "MITConversionUtilities.h"
 #include "CMS2.h"
+#endif
 #include "TMath.h"
 
 

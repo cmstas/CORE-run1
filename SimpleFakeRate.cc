@@ -1,4 +1,8 @@
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/SimpleFakeRate.h"
+#else
 #include "SimpleFakeRate.h"
+#endif
 //*******************************************************
 //
 //  Usage of this code is documented in the header file

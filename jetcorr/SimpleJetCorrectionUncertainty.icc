@@ -4,9 +4,13 @@
 // Email:  kkousour@fnal.gov, philipp.schieferdecker@cern.ch
 
 #define STANDALONE
-
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#else
 #include "SimpleJetCorrectionUncertainty.h"
 #include "JetCorrectorParameters.h"
+#endif
 #include <vector>
 #include <string>
 

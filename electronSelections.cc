@@ -6,11 +6,19 @@
 #include "Math/VectorUtil.h"
 
 // CMS2 includes
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/electronSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/MITConversionUtilities.h"
+#include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#else
 #include "electronSelections.h"
 #include "eventSelections.h"
 #include "MITConversionUtilities.h"
 #include "muonSelections.h"
 #include "trackSelections.h"
+#endif
 
 using namespace std;
 using namespace tas;

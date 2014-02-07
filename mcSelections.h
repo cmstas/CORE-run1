@@ -1,8 +1,11 @@
-
 # ifndef MCSELECTIONS_H
 # define MCSELECTIONS_H
 
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#else
 #include "CMS2.h"
+#endif
 
 int getDrellYanType();
 bool isDYee();

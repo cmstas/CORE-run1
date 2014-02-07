@@ -1,5 +1,10 @@
 // $Id: Thrust.cc,v 1.2 2013/01/28 23:44:26 kelley Exp $
-#include "./Thrust.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/Thrust.h"
+#else
+#include "CMS2.h"
+#include "Thrust.h"
+#endif
 
 const double pi = TMath::Pi(), pi2 = 2 * TMath::Pi(), pi_2 = TMath::Pi() / 2, pi_4 = TMath::Pi() / 4;
 

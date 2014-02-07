@@ -216,8 +216,7 @@ class BranchInfo:
 
 def HeaderString(branch_infos, use_cmssw):
 	if use_cmssw:
-		header_str = """
-#ifndef CLASSNAME_H
+		header_str = """#ifndef CLASSNAME_H
 #define CLASSNAME_H
 
 #include "Math/LorentzVector.h"
@@ -591,8 +590,7 @@ extern CLASSNAME OBJNAME;
 #endif // CLASSNAME_H
 """
 	else:
-		header_str = """
-#ifndef CLASSNAME_H
+		header_str = """#ifndef CLASSNAME_H
 #define CLASSNAME_H
 
 #include "Math/LorentzVector.h"

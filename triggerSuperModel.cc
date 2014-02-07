@@ -1,8 +1,13 @@
-#include "triggerSuperModel.h"
 #include "Math/LorentzVector.h"
 #include "Math/VectorUtil.h"
 #include "TMath.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/triggerSuperModel.h"
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#else
+#include "triggerSuperModel.h"
 #include "CMS2.h"
+#endif
 
 //----------------------------------------
 // To be used on Monte Carlo events.
@@ -74,9 +79,9 @@ float triggerSuperModelEffic(int hyp) {
   // If this is not the case, return zero and complain.
   //-------------------------------------------------
   bool badHyp = false;
-  if( TMath::Max(cms2.hyp_ll_p4()[hyp].pt(),cms2.hyp_lt_p4()[hyp].pt()) < 20.)
+  if( TMath::Max(tas::hyp_ll_p4()[hyp].pt(),tas::hyp_lt_p4()[hyp].pt()) < 20.)
     badHyp=true;
-  if( TMath::Min(cms2.hyp_ll_p4()[hyp].pt(),cms2.hyp_lt_p4()[hyp].pt()) < 10.)
+  if( TMath::Min(tas::hyp_ll_p4()[hyp].pt(),tas::hyp_lt_p4()[hyp].pt()) < 10.)
     badHyp=true;
   if (badHyp) {
     std::cout << "Bad inputs to trigger SuperModelEffic" << std::endl;
@@ -86,7 +91,7 @@ float triggerSuperModelEffic(int hyp) {
   //-------------------------------------------------
   // If it is a dielectron event, we return 100%
   //-------------------------------------------------
-  if (cms2.hyp_type()[hyp] == 3) return 1.0;
+  if (tas::hyp_type()[hyp] == 3) return 1.0;
 
   //-------------------------------------------------
   // Dimuon events.  
@@ -98,16 +103,16 @@ float triggerSuperModelEffic(int hyp) {
   float eta2;
 
   // Convention: 1 is the highest pt guy, 2 is the lowest pt guy
-  if (cms2.hyp_type()[hyp] == 0) {
-    pt1 = cms2.hyp_ll_p4()[hyp].pt();
-    pt2 = cms2.hyp_lt_p4()[hyp].pt();
-    eta1= TMath::Abs(cms2.hyp_ll_p4()[hyp].eta());
-    eta2= TMath::Abs(cms2.hyp_lt_p4()[hyp].eta());
+  if (tas::hyp_type()[hyp] == 0) {
+    pt1 = tas::hyp_ll_p4()[hyp].pt();
+    pt2 = tas::hyp_lt_p4()[hyp].pt();
+    eta1= TMath::Abs(tas::hyp_ll_p4()[hyp].eta());
+    eta2= TMath::Abs(tas::hyp_lt_p4()[hyp].eta());
     if (pt2 > pt1) {
-      pt1 = cms2.hyp_lt_p4()[hyp].pt();
-      pt2 = cms2.hyp_ll_p4()[hyp].pt();
-      eta1= TMath::Abs(cms2.hyp_lt_p4()[hyp].eta());
-      eta2= TMath::Abs(cms2.hyp_ll_p4()[hyp].eta());
+      pt1 = tas::hyp_lt_p4()[hyp].pt();
+      pt2 = tas::hyp_ll_p4()[hyp].pt();
+      eta1= TMath::Abs(tas::hyp_lt_p4()[hyp].eta());
+      eta2= TMath::Abs(tas::hyp_ll_p4()[hyp].eta());
     }
 
     // both above 15 and both in eta<2.1
@@ -184,20 +189,20 @@ float triggerSuperModelEffic(int hyp) {
   //-------------------------------------------------
   // emu events
   //-------------------------------------------------
-  if (cms2.hyp_type()[hyp] == 1 || cms2.hyp_type()[hyp] == 2) {
+  if (tas::hyp_type()[hyp] == 1 || tas::hyp_type()[hyp] == 2) {
 
     float ptmu;
     float ptele;
     float etamu;
 
-    if (TMath::Abs(cms2.hyp_ll_id()[hyp]) == 13) {      
-      ptmu  = cms2.hyp_ll_p4()[hyp].pt();
-      ptele = cms2.hyp_lt_p4()[hyp].pt();
-      etamu=  TMath::Abs(cms2.hyp_ll_p4()[hyp].eta());
+    if (TMath::Abs(tas::hyp_ll_id()[hyp]) == 13) {      
+      ptmu  = tas::hyp_ll_p4()[hyp].pt();
+      ptele = tas::hyp_lt_p4()[hyp].pt();
+      etamu=  TMath::Abs(tas::hyp_ll_p4()[hyp].eta());
     } else {
-      ptmu  = cms2.hyp_lt_p4()[hyp].pt();
-      ptele = cms2.hyp_ll_p4()[hyp].pt();
-      etamu=  TMath::Abs(cms2.hyp_lt_p4()[hyp].eta());
+      ptmu  = tas::hyp_lt_p4()[hyp].pt();
+      ptele = tas::hyp_ll_p4()[hyp].pt();
+      etamu=  TMath::Abs(tas::hyp_lt_p4()[hyp].eta());
     }
 
 

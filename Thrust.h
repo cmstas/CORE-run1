@@ -5,6 +5,8 @@
 #ifndef Thrust_h
 #define Thrust_h
 
+#include <vector>
+
 //ROOT                                                                                                                                                     
 #include "TMath.h"
 #include "Math/LorentzVector.h"
@@ -15,12 +17,13 @@
 #include "TVectorD.h"
 
 // CMS2                                                                                                                                                    
-#include "./CMS2.h"
-
-//#include "Utils.h"                                                                                                                                       
-
-#include "./utilities.h"
-#include <vector>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#else
+#include "CMS2.h"
+#include "utilities.h"
+#endif
 
 using namespace std;
 //using namespace tas;                                                                                                                                     

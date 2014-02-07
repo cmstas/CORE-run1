@@ -6,7 +6,6 @@
 #define JETSELECTIONS_H
 
 #include <vector>
-#include "CMS2.h"
 
 //set to 1 if you want to use gen jets
 #define haveGEN 0

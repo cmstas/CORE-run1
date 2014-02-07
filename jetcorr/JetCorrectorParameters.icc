@@ -5,8 +5,6 @@
 // Generic parameters for Jet corrections
 //
 #define STANDALONE
-#include "JetCorrectorParameters.h"
-#include "Utilities.icc"
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -15,6 +13,13 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/Utilities.icc"
+#else
+#include "JetCorrectorParameters.h"
+#include "Utilities.icc"
+#endif
 
 //------------------------------------------------------------------------ 
 //--- JetCorrectorParameters::Definitions constructor --------------------

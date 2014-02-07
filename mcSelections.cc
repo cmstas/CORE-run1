@@ -3,9 +3,14 @@
 #include <set>
 #include "TDatabasePDG.h"
 #include "Math/VectorUtil.h"
-#include "CMS2.h"
-#include "mcSelections.h"
 #include "Math/LorentzVector.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/mcSelections.h"
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#else
+#include "mcSelections.h"
+#include "CMS2.h"
+#endif
 
 using namespace std;
 

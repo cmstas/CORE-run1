@@ -4,15 +4,20 @@
 // Email:  kkousour@fnal.gov, philipp.schieferdecker@cern.ch
 
 #define STANDALONE
-
-#include "JetCorrectionUncertainty.h"
-#include "SimpleJetCorrectionUncertainty.h"
-#include "JetCorrectorParameters.h"
 #include "Math/PtEtaPhiE4D.h"
 #include "Math/Vector3D.h"
 #include "Math/LorentzVector.h"
 #include <vector>
 #include <string>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrectionUncertainty.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#else
+#include "JetCorrectionUncertainty.h"
+#include "SimpleJetCorrectionUncertainty.h"
+#include "JetCorrectorParameters.h"
+#endif
 
 /////////////////////////////////////////////////////////////////////////
 JetCorrectionUncertainty::JetCorrectionUncertainty () 

@@ -3,6 +3,19 @@
 #include <algorithm>
 #include <utility>
 #include "Math/VectorUtil.h"
+
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.icc"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/FactorizedJetCorrector.icc"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrector.icc"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectionUncertainty.icc"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrectionUncertainty.icc"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#else
+#include "CMS2.h"
 #include "jetSelections.h"
 #include "trackSelections.h"
 #include "jetcorr/JetCorrectorParameters.icc"
@@ -11,6 +24,7 @@
 #include "jetcorr/JetCorrectionUncertainty.icc"
 #include "jetcorr/SimpleJetCorrectionUncertainty.icc"
 #include "utilities.h"
+#endif
 
 using std::vector;
 using std::pair;

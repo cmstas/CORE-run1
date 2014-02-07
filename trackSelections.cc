@@ -1,7 +1,12 @@
 #include "Math/VectorUtil.h"
 #include <math.h>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#else
 #include "CMS2.h"
 #include "trackSelections.h"
+#endif
 
 // return a pair of d0, d0err of a ctf track with respect to a primary vertex
 std::pair<double, double> trks_d0_pv (int itrk, int ipv)

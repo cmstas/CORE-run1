@@ -1,8 +1,13 @@
-#include "eventSelections.h"
-#include "trackSelections.h"
-#include "Math/LorentzVector.h"
-
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#else
 #include "CMS2.h"
+#include "trackSelections.h"
+#include "eventSelections.h"
+#endif
+#include "Math/LorentzVector.h"
 
 //----------------------------------------------------------------
 // A ridicolusly simple function, but since the Z veto is used 

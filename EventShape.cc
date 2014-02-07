@@ -1,4 +1,8 @@
-#include "./EventShape.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/EventShape.h"
+#else
+#include "EventShape.h"
+#endif
 
 EventShape::~EventShape(){}
 

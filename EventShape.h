@@ -18,11 +18,16 @@
 #include "TVectorD.h"
 
 // CMS2
-#include "./CMS2.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#else
+#include "CMS2.h"
+#include "utilities.h"
+#endif
 
 //#include "Utils.h"
 
-#include "./utilities.h"
 #include <vector>
 
 using namespace std; 

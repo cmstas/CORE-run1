@@ -1,20 +1,23 @@
-#include "mcSelections.h"
-
+#include <iostream>
 #include <math.h>
 #include <stdlib.h>
 #include <set>
 #include "TDatabasePDG.h"
 #include "Math/VectorUtil.h"
-#include "CMS2.h"
-#include "mcSUSYkfactor.h"
-#include "Math/LorentzVector.h"
-#include "mcSelections.h"
 #include "TSystem.h"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TH2F.h"
 #include "TAxis.h"
-#include <iostream>
+#include "Math/LorentzVector.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/mcSUSYkfactor.h"
+#include "CMS2/NtupleMacrosCore/interface/mcSelections.h"
+#else
+#include "CMS2.h"
+#include "mcSelections.h"
+#include "mcSUSYkfactor.h"
+#endif
 
 using namespace std;
 

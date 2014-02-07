@@ -1,7 +1,13 @@
 #define STANDALONE
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrector.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/Utilities.icc"
+#else
 #include "SimpleJetCorrector.h"
 #include "JetCorrectorParameters.h"
 #include "Utilities.icc"
+#endif
 #include <iostream>
 #include <sstream>
 #include <cmath>

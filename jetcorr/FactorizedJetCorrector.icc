@@ -4,16 +4,22 @@
 // Email:  kkousour@fnal.gov, philipp.schieferdecker@cern.ch
 
 #define STANDALONE
-#include "FactorizedJetCorrector.h"
-#include "SimpleJetCorrector.h"
-#include "JetCorrectorParameters.h"
-#include "Utilities.icc"
 #include "Math/PtEtaPhiE4D.h"
 #include "Math/Vector3D.h"
 #include "Math/LorentzVector.h"
 #include <vector>
 #include <string>
 #include <sstream>
+#include "Utilities.icc"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/SimpleJetCorrector.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#else
+#include "FactorizedJetCorrector.h"
+#include "SimpleJetCorrector.h"
+#include "JetCorrectorParameters.h"
+#endif
 
 //------------------------------------------------------------------------ 
 //--- Default FactorizedJetCorrector constructor -------------------------

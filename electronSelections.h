@@ -9,11 +9,15 @@
 // ROOT
 #include "TMath.h"
 
-// Header
-#include "electronSelectionsParameters.h"
-
 // CMS2
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelectionsParameters.h"
+#else
 #include "CMS2.h"
+#include "electronSelectionsParameters.h"
+#endif
+
 
 //
 typedef ULong64_t   uint64;

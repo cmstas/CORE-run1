@@ -3,13 +3,16 @@
 #include <set>
 #include "TDatabasePDG.h"
 #include "Math/VectorUtil.h"
-//#include "CMS2.h"
 #include "Math/LorentzVector.h"
 #include "TSystem.h"
 #include "TFile.h"
 #include "TAxis.h"
 #include <iostream>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/mcbtagSFuncert.h"
+#else
 #include "mcbtagSFuncert.h"
+#endif
 
 //------------------------------------------------------------------------
 //------------------------------------------------------------------------

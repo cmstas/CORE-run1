@@ -1,5 +1,10 @@
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMacrosCore/interface/conversionTools.h"
+#else
 #include "CMS2.h"
 #include "conversionTools.h"
+#endif
 
 
 using namespace std;
