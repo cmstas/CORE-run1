@@ -6,12 +6,17 @@
 #include "Math/VectorUtil.h"
 #include "TH2D.h"
 #include "TRandom3.h"
-#include "JetResolution.h"
 #include <vector>
 #include <map>
 #include <utility>
-#include "SigInputObj.h"
 #include <fstream>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/SigInputObj.h"
+#else
+#include "JetResolution.h"
+#include "SigInputObj.h"
+#endif
 
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 

@@ -49,11 +49,6 @@ function create_source_ln
 }
 
 # sym link header files
-create_header_ln jetcorr
-# create_header_ln tcmet
-# create_header_ln jetsmear
-# create_header_ln MT2
-# create_header_ln QuarkGluonTagger
 create_header_ln EventShape.h
 create_header_ln MITConversionUtilities.h
 create_header_ln SimpleFakeRate.h
@@ -72,7 +67,7 @@ create_header_ln triggerSuperModel.h
 create_header_ln triggerUtils.h
 create_header_ln utilities.h
 create_header_ln jetSelections.h
-# create_header_ln metSelections.h
+create_header_ln metSelections.h
 # create_header_ln ttbarSelections.h
 # create_header_ln photonSelections.h
 # create_header_ln jetSmearingTools.h
@@ -80,6 +75,11 @@ create_header_ln jetSelections.h
 # create_header_ln ttvSelections.h
 # create_header_ln ssSelections.h
 # create_header_ln JetMETUncertainty.h
+create_header_ln jetcorr
+# create_header_ln tcmet
+# create_header_ln jetsmear
+# create_header_ln MT2
+# create_header_ln QuarkGluonTagger
 
 # sym link source files
 create_source_ln EventShape.cc
@@ -100,12 +100,8 @@ create_source_ln triggerSuperModel.cc
 create_source_ln triggerUtils.cc
 create_source_ln utilities.cc
 create_source_ln jetSelections.cc
-# create_source_ln metSelections.cc
+create_source_ln metSelections.cc
 # create_source_ln photonSelections.cc
-# create_source_ln jetsmear/JetResolution.cc
-# create_source_ln jetsmear/JetSmearer.cc
-# create_source_ln jetsmear/SigInputObj.cc
-# create_source_ln jetSmearingTools.cc
 # create_source_ln osSelections.cc
 # create_source_ln ttbarSelections.cc
 # create_source_ln ttvSelections.cc
@@ -115,6 +111,10 @@ create_source_ln jetSelections.cc
 # create_source_ln MT2/MT2Utility.cc
 # create_source_ln QuarkGluonTagger/QuarkGluonTagger.cc
 # create_source_ln QuarkGluonTagger/QGLikelihoodCalculator.cc
+create_source_ln jetsmear/JetResolution.cc
+# create_source_ln jetsmear/JetSmearer.cc
+# create_source_ln jetsmear/SigInputObj.cc
+# create_source_ln jetSmearingTools.cc
 
 popd
 

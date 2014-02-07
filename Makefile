@@ -1,32 +1,46 @@
 include Makefile.arch
 
-#
+# ----------------------------------------------------------------------- #
 # stuff to make
-#
+# ----------------------------------------------------------------------- #
+SOURCES := $(wildcard *.cc) $(wildcard jetsmear/*.cc) $(wildcard MT2/*.cc)
+OBJECTS := $(SOURCES:.cc=.o)
+DEPS    := $(SOURCES:.cc=.d)
+LIB     := libCMS2NtupleMacrosCORE.so
 
-SOURCES=$(wildcard *.cc) $(wildcard jetsmear/*.cc) $(wildcard MT2/*.cc)
-OBJECTS=$(SOURCES:.cc=.o)
-LIB=libCMS2NtupleMacrosCORE.so
-
-#
+# ----------------------------------------------------------------------- #
 # how to make it
-#
-
+# ----------------------------------------------------------------------- #
 $(LIB): $(OBJECTS) 
 	$(LD) $(LDFLAGS) $(SOFLAGS) $(OBJECTS) $(ROOTLIBS) -o $@
 
-%.o:	%.cc
+%.o: %.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-#
+# ----------------------------------------------------------------------- #
 # target to build
-# likelihood id library
-#
+# ----------------------------------------------------------------------- #
+.PHONY: all
+all: $(DEPS) $(LIB)
 
-all: $(LIB) 
+# ----------------------------------------------------------------------- #
+# clean target
+# ----------------------------------------------------------------------- #
+.PHONY: clean
 clean:
-	rm -f *.o \ 
-	rm -f jetsmear/*.o \ 
-	rm -f MT2/*.o \
-	rm -f *.d \
-	rm -f *.so
+	@echo "removed object and shared object files"
+	@rm -f *.o
+	@rm -f jetsmear/*.o
+	@rm -f MT2/*.o
+	@rm -f *.d
+	@rm -f *.so
+
+# ----------------------------------------------------------------------- #
+# check dependencies
+# ----------------------------------------------------------------------- #
+-include $(DEPS)
+
+%.d: %.cc
+	@$(CXX) -M $(CXXFLAGS) $< > $@.$$$$;                \
+	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+	rm -f $@.$$$$

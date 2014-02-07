@@ -7,16 +7,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#include "JetResolution.h"
-#include "../jetcorr/JetCorrectorParameters.h"
-
 #include <TMath.h>
-
-
 #include <iostream>
 #include <sstream>
 #include <cassert>
 
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetsmear/JetResolution.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/JetCorrectorParameters.h"
+#else
+#include "JetResolution.h"
+#include "../jetcorr/JetCorrectorParameters.h"
+#endif
 
 using namespace std;
 

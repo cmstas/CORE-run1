@@ -6,6 +6,10 @@
 #define JETSELECTIONS_H
 
 #include <vector>
+#include <string>
+#include "Math/VectorUtil.h"
+
+typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<float> > LorentzVector;
 
 //set to 1 if you want to use gen jets
 #define haveGEN 0

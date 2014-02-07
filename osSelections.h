@@ -4,10 +4,15 @@
 #include <vector>
 #include <string>
 #include "Math/LorentzVector.h"
-#include "CMS2.h"
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#else
 #include "jetSelections.h"
-#include "electronSelections.h"
+#include "jetcorr/FactorizedJetCorrector.h"
 #include "jetcorr/JetCorrectionUncertainty.h"
+#endif
 
 /////////////////////////////////////////////////////////////////
 ///                                                           ///

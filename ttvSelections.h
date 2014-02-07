@@ -1,7 +1,11 @@
 #ifndef TTVSELECTIONS_H
 #define TTVSELECTIONS_H
 #include <vector>
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
+#else
 #include "jetSelections.h"
+#endif
 
 class FactorizedJetCorrector;
 
@@ -76,7 +80,7 @@ namespace ttv
 
   std::vector<LorentzVector> getGoodLeptons(LeptonType::value_type lep_type, float pt = 20., float mu_eta = 2.4, float ele_eta = 2.5);
   float getTrigMVAThreshold(int idx, ttv::LeptonType::value_type lep_type);
-  float getNonTrigMVAThreshold(int idx, ttv::LeptonType::value_type lep_type);
+  float getNonTrigMVAThreshold(int , ttv::LeptonType::value_type); // unnamed parameters to preserve consistent interface but suppress warnings
 
   std::vector<LorentzVector> getJets(std::vector<LorentzVector>& leps, enum JetType type, float deltaR = 0.5, float min_pt = 15., float max_eta = 2.4, float rescale = 1.0, int systFlag = 0);
   std::vector<LorentzVector> getJets(std::vector<LorentzVector>& leps, FactorizedJetCorrector* jet_corrector, enum JetType type, float deltaR = 0.5, float min_pt = 15., float max_eta = 2.4, float rescale = 1.0, int systFlag = 0);

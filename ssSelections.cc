@@ -14,11 +14,29 @@
 #include "TRandom3.h"
 
 // CMS2 Includes
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
+#include "CMS2/NtupleMAcrosCore/interface/electronSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/electronSelectionsParameters.h"
+#include "CMS2/NtupleMAcrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/metSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/ssSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/trackSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/MITConversionUtilities.h"
+#include "CMS2/NtupleMAcrosCore/interface/triggerUtils.h"
+#include "CMS2/NtupleMAcrosCore/interface/eventSelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/utilities.h"
+#include "CMS2/NtupleMAcrosCore/interface/susySelections.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#include "CMS2/NtupleMAcrosCore/interface/jetcorr/JetCorrectionUncertainty.h"
+#else
+#include "CMS2.h"
+#include "ssSelections.h"
 #include "electronSelections.h"
 #include "electronSelectionsParameters.h"
 #include "muonSelections.h"
 #include "metSelections.h"
-#include "ssSelections.h"
 #include "jetSelections.h"
 #include "trackSelections.h"
 #include "MITConversionUtilities.h"
@@ -28,6 +46,7 @@
 #include "susySelections.h"
 #include "jetcorr/FactorizedJetCorrector.h"
 #include "jetcorr/JetCorrectionUncertainty.h"
+#endif
 
 using namespace wp2012;
 using ROOT::Math::VectorUtil::DeltaR;
@@ -1186,8 +1205,13 @@ std::vector<LorentzVector> samesign::getJets(int idx, FactorizedJetCorrector* je
 ////////////////////////////////////////////////////////////////////////////////////////////////
     
 // JEC taken from ntuple
-std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, const int systFlag, bool sort_by_pt)
+std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType jet_type, const int systFlag, bool)
 {
+    if (jet_type == JETS_TYPE_PF_FAST_CORR_RESIDUAL or jet_type==JETS_TYPE_PF_FAST_CORR)
+    {
+        throw std::runtime_error("[samesign::getAllCorrectedJets]: ERROR -- jet type not supported");
+    }
+
     // corrections 
     std::vector<LorentzVector> temp_vjets;
     for (unsigned int jidx = 0; jidx < cms2.pfjets_p4().size(); jidx++)
@@ -1206,8 +1230,13 @@ std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, cons
 
 
 //JEC applied otf
-std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, FactorizedJetCorrector* jet_corrector, const int systFlag, bool sort_by_pt)
+std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType jet_type, FactorizedJetCorrector* jet_corrector, const int systFlag, bool)
 {
+    if (jet_type == JETS_TYPE_PF_FAST_CORR_RESIDUAL or jet_type==JETS_TYPE_PF_FAST_CORR)
+    {
+        throw std::runtime_error("[samesign::getAllCorrectedJets]: ERROR -- jet type not supported");
+    }
+
     // now impose the pt requirement after applying the extra corrections
     std::vector<LorentzVector> temp_vjets;
     for (unsigned int jidx = 0; jidx < cms2.pfjets_p4().size(); jidx++)
@@ -1230,8 +1259,13 @@ std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, Fact
 
 
 //JEC uncertainty applied otf
-std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, JetCorrectionUncertainty *jet_unc, enum JetScaleType scale_type, bool sort_by_pt)
+std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType jet_type, JetCorrectionUncertainty *jet_unc, enum JetScaleType scale_type, bool)
 {
+    if (jet_type == JETS_TYPE_PF_FAST_CORR_RESIDUAL or jet_type==JETS_TYPE_PF_FAST_CORR)
+    {
+        throw std::runtime_error("[samesign::getAllCorrectedJets]: ERROR -- jet type not supported");
+    }
+
     // now impose the pt requirement after applying the extra corrections
     std::vector<LorentzVector> temp_vjets;
     for (unsigned int jidx = 0; jidx < cms2.pfjets_p4().size(); jidx++)
@@ -1249,8 +1283,13 @@ std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, JetC
 
 
 //JEC AND JEC uncertainty applied otf
-std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType type, FactorizedJetCorrector* jet_corrector, JetCorrectionUncertainty *jet_unc, enum JetScaleType scale_type, bool sort_by_pt)
+std::vector<LorentzVector> samesign::getAllCorrectedJets(enum JetType jet_type, FactorizedJetCorrector* jet_corrector, JetCorrectionUncertainty *jet_unc, enum JetScaleType scale_type, bool)
 {
+    if (jet_type == JETS_TYPE_PF_FAST_CORR_RESIDUAL or jet_type==JETS_TYPE_PF_FAST_CORR)
+    {
+        throw std::runtime_error("[samesign::getAllCorrectedJets]: ERROR -- jet type not supported");
+    }
+
     // now impose the pt requirement after applying the extra corrections
     std::vector<LorentzVector> temp_vjets;
     for (unsigned int jidx = 0; jidx < cms2.pfjets_p4().size(); jidx++)

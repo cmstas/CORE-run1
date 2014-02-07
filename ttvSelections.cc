@@ -3,6 +3,20 @@
 #include <algorithm>
 
 //core headers
+#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosCore/interface/ttvSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/electronSelectionsParameters.h"
+#include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/metSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/ssSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/triggerUtils.h"
+#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
+#include "CMS2/NtupleMacrosCore/interface/utilities.h"
+#include "CMS2/NtupleMacrosCore/interface/susySelections.h"
+#include "CMS2/NtupleMacrosCore/interface/jetcorr/FactorizedJetCorrector.h"
+#else
 #include "ttvSelections.h"
 #include "electronSelections.h"
 #include "electronSelectionsParameters.h"
@@ -15,12 +29,12 @@
 #include "utilities.h"
 #include "susySelections.h"
 #include "jetcorr/FactorizedJetCorrector.h"
+#endif
 
 //Root headers
 #include "Math/LorentzVector.h"
 #include "Math/VectorUtil.h"
 #include "TMath.h"
-#include "TLorentzVector.h"
 #include "TDatabasePDG.h"
 
 
@@ -475,12 +489,11 @@ float ttv::getTrigMVAThreshold(int idx, LeptonType::value_type lep_type)
   }
   return 2.; // or should this be a garbage value? this will guarentee that a comparison to a legitimate value will fail.
 }
-float ttv::getNonTrigMVAThreshold(int idx, LeptonType::value_type lep_type)
+
+float ttv::getNonTrigMVAThreshold(int, LeptonType::value_type)
 {
   // this one is not implemented yet and likely won't be used
-  // dummy assignment to suppress warning
-  idx = -9999;  
-  lep_type = LeptonType::static_size;
+  // variables are unnammed to suppress warning
   return 2.; // or should this be a garbage value? this will guarentee that a comparison to a legitimate value will fail.
 }
 
