@@ -144,8 +144,7 @@ mkdir -p $header_dir
 mkdir -p $header_dir/interface/dummy_dir # needed for #include "../CMS2.h" :(
 
 # create the CMS2.cc/h
-EXE=$core_dir/setup/makeTTreeClassFiles.py
-cmd="python $EXE --file_name $file_name --use_scram --obj_name cms2 --namespace tas --class_name CMS2 --tree_name \"Events\""
+cmd="root -b -q -l \"$core_dir/setup/makeCMS2ClassFiles.C+(\\\"$file_name\\\", false, \\\"Events\\\", \\\"\\\", \\\"CMS2\\\", \\\"tas\\\", \\\"cms2\\\")\"" 
 echo $cmd
 eval $cmd
 
@@ -157,12 +156,16 @@ mv CMS2.h $header_dir/interface/.
 # move CMS2.cc
 echo "[setupCoreForCMSSW.sh] moving CMS.cc to $header_dir/src"
 mkdir -p $header_dir/src
-mv CMS2.cc $header_dir/src/.
+sed 's/\#include "CMS2.h"/\#include "CMS2\/NtupleMacrosHeader\/interface\/CMS2.h"/g' CMS2.cc > $header_dir/src/CMS2.cc
+rm $core_dir/CMS2.cc
+
+# remove example files
+rm $core_dir/doAll.C
+rm $core_dir/ScanChain.C
 
 # setup BuildFile.xml
 echo "[setupCoreForCMSSW.sh] setting up  $header_dir/BuildFile.xml"
-echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
-<use name=\"root\"/>
+echo "<use name=\"root\"/>
 <export>
   <use name=\"root\"/>
   <lib name=\"1\"/>
