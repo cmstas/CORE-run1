@@ -12,7 +12,7 @@ enum wp2012_tightness {
     LOOSE,
     MEDIUM,
     TIGHT
-}
+};
 
 //
 // Data required for V02 of 
@@ -31,7 +31,7 @@ enum cic_tightness {
     CIC_HYPERTIGHT2,
     CIC_HYPERTIGHT3,
     CIC_HYPERTIGHT4
-}
+};
 //--------------------------------
 
 //
@@ -57,7 +57,7 @@ enum vbtf_tightness {
     VBTF_90_HLT,
     VBTF_90_HLT_CALOIDT_TRKIDVL,
     VBTF_95_NOHOEEND
-}
+};
 //--------------------------------
 
 //
@@ -69,7 +69,7 @@ enum vbtf_tightness {
 enum cand_tightness {
     CAND_01,
     CAND_02
-}
+};
 //--------------------------------
 
 void eidGetWP2012(const wp2012_tightness tightness, std::vector<double> &cutdeta, std::vector<double> &cutdphi, std::vector<double> &cuthoe, std::vector<double> &cutsee, std::vector<double> &cutooemoop, std::vector<double> &cutd0vtx, std::vector<double> &cutdzvtx, std::vector<bool> &cutvtxfit, std::vector<int> &cutmhit, std::vector<double> &cutrelisohighpt, std::vector<double> &cutrelisolowpt);

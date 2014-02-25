@@ -122,7 +122,6 @@ popd
 
 echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
 <use name=\"CMS2/NtupleMacrosHeader\"/>
-<use name=\"CMS2/Dictionaries\"/>
 <use name=\"rootrflx\"/>
 <use name=\"roofit\"/>
 <use name=\"rootcore\"/>
@@ -130,7 +129,6 @@ echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
 <lib name=\"EG\"/>
 <export>
   <use name=\"CMS2/NtupleMacrosHeader\"/>
-  <use name=\"CMS2/Dictionaries\"/>
   <use name=\"root\"/>
   <lib name=\"1\"/>
 </export>" > $core_dir/BuildFile.xml
@@ -164,13 +162,9 @@ mv CMS2.cc $header_dir/src/.
 # setup BuildFile.xml
 echo "[setupCoreForCMSSW.sh] setting up  $header_dir/BuildFile.xml"
 echo "<flags CPPDEFINES=\"CMS2_USE_CMSSW=1\"/>
-<use name=\"FWCore/Framework\"/>
-<use name=\"DataFormats/Common\"/>
-<use name=\"CMS2/Dictionaries\"/>
 <use name=\"root\"/>
 <export>
   <use name=\"root\"/>
-  <use name=\"CMS2/Dictionaries\"/>
   <lib name=\"1\"/>
 </export>" > $header_dir/BuildFile.xml
 
