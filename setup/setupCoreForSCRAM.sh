@@ -147,7 +147,7 @@ mkdir -p $header_dir/interface/dummy_dir # needed for #include "../CMS2.h" :(
 
 # create the CMS2.cc/h
 EXE=$core_dir/setup/makeTTreeClassFiles.py
-cmd="python $EXE --file_name $file_name --use_cmssw --obj_name cms2 --namespace tas --class_name CMS2 --tree_name \"Events\""
+cmd="python $EXE --file_name $file_name --use_scram --obj_name cms2 --namespace tas --class_name CMS2 --tree_name \"Events\""
 echo $cmd
 eval $cmd
 

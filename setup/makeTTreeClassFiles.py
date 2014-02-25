@@ -23,6 +23,7 @@
 #   --class_name: The class name to use (default: "CMS2")
 #   
 #   CMSSW Options (off by default)
+#   --use_scram : Toggle to support scram (default: false)
 #   --use_cmssw : Toggle to support CMSSW (default: false)
 #   --no_trig   : Toggle to not include the trigger functions (default: false)
 #   
@@ -52,6 +53,7 @@ parser.add_option("--obj_name"  , dest="obj_name"  , default="cms2"  , help="The
 parser.add_option("--class_name", dest="class_name", default="CMS2"  , help="The class name to use (default: \"CMS2\")"          )
 
 # boolean options
+parser.add_option("--use_scram", action="store_true", dest="use_scram", default=False , help="Toggle to support scram (default: \"false\")"                    )
 parser.add_option("--use_cmssw", action="store_true", dest="use_cmssw", default=False , help="Toggle to support CMSSW (default: \"false\")"                    )
 parser.add_option("--no_trig"  , action="store_true", dest="no_trig"  , default=False , help="Toggle to not include the trigger functions (default: \"false\")")
 
@@ -884,7 +886,7 @@ extern CLASSNAME OBJNAME;
 
 # FIXME!! to not hard code path
 def ImplString(branch_infos, use_cmssw):
-	if options.use_cmssw:
+	if (options.use_cmssw):
 		impl_str = """#ifdef CMS2_USE_CMSSW
 #include "CMS2/NtupleMacrosHeader/interface/CLASSNAME.h"
 #else
@@ -1028,8 +1030,16 @@ BRANCH_WRAPPER_CMSSW
 
 """
 	else:
-		impl_str = """#include "CLASSNAME.h"
-#include <iostream>
+		if options.use_scram:
+			impl_str = """#ifdef CMS2_USE_CMSSW
+#include "CMS2/NtupleMacrosHeader/interface/CLASSNAME.h"
+#else
+#include "CLASSNAME.h"
+#endif
+"""
+		else: 
+			impl_str = "#include \"CLASSNAME.h\""
+		impl_str = impl_str + """#include <iostream>
 #include <unistd.h>
 
 // global object
