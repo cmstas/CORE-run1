@@ -3,16 +3,9 @@
 
 #include <vector>
 #include "Math/LorentzVector.h"
-#include "muonSelections.h"
 #ifdef CMS2_USE_CMSSW
-#include "CMS2/NtupleMacrosHeader/interface/CMS2.h"
 #include "CMS2/NtupleMacrosCore/interface/muonSelections.h"
-#include "CMS2/NtupleMacrosCore/interface/trackSelections.h"
-#include "CMS2/NtupleMacrosCore/interface/eventSelections.h"
 #else
-#include "CMS2.h"
-#include "trackSelections.h"
-#include "eventSelections.h"
 #include "muonSelections.h"
 #endif
 
