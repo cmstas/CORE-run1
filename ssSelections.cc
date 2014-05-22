@@ -67,6 +67,158 @@ struct SortByPt
     }
 };
 
+/////////////////////////////////////////////////////////////////
+///                                                           ///
+///                                                           ///
+///                                                           ///
+///          2014 Selections (Fake Lepton Working Group)      ///
+///                                                           ///
+///                                                           ///
+///                                                           ///
+/////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2014 numerator lepton (passes ID and isolation)
+////////////////////////////////////////////////////////////////////////////////////////////     
+bool samesign2014::isNumeratorLepton(int id, int idx, bool use_el_eta)
+{
+  using namespace tas;
+  
+  if ( !samesign2014::isDenominatorLepton(id, idx, use_el_eta) )
+    return false;
+
+  if (abs(id) == 11)
+    {
+      bool isEB = fabs(els_etaSC().at(idx))<1.479;
+      float eff_area = fastJetEffArea03_v2(els_etaSC().at(idx)); 
+      float iso = (els_iso03_pf2012ext_ch().at(idx) + max(0.0f, els_iso03_pf2012ext_nh().at(idx) + els_iso03_pf2012ext_em().at(idx) - (max(0.0f, evt_kt6pf_foregiso_rho())*eff_area)))/els_p4().at(idx).pt();
+      bool passIso_t = (iso < 0.15);
+      if ( !isEB && els_p4().at(idx).pt() < 20.0)  passIso_t = (iso < 0.10);
+
+      int elgsftkid = cms2.els_gsftrkidx().at(idx);
+      int eltkid    = cms2.els_trkidx().at(idx);
+      int ivtx      = firstGoodVertex();
+      float d0 = ivtx >= 0  ? ( elgsftkid>=0 ? gsftrks_d0_pv(elgsftkid,ivtx).first  : ( elgsftkid>=0 ? trks_d0_pv(eltkid,ivtx).first : cms2.els_d0().at(idx))) : -999.;
+      bool passD0_t = (fabs(d0) < 0.02);
+
+      if ( !passIso_t || !passD0_t )
+	return false;
+      return true;
+    }
+  if (abs(id) == 13) 
+    {
+      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 0.1);
+      int mutkid = cms2.mus_trkidx().at(idx);
+      int ivtx   = firstGoodVertex();
+      bool passD0_t  =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_d0_pv(mutkid,ivtx).first) < 0.01): false;
+      if ( !passIso_l || !passD0_t)
+	return false;
+      return true;
+    }
+  return false; // shoudn't be here!
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2014 numerator hypothesis (passes ID and isolation)
+////////////////////////////////////////////////////////////////////////////////////////////     
+bool samesign2014::isNumeratorHypothesis(int idx, bool use_el_eta)
+{
+    if (!samesign2014::isNumeratorLepton(cms2.hyp_lt_id().at(idx), cms2.hyp_lt_index().at(idx), use_el_eta))
+    {
+        return false;
+    }
+    if (!samesign2014::isNumeratorLepton(cms2.hyp_ll_id().at(idx), cms2.hyp_ll_index().at(idx), use_el_eta))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2014 denominator lepton (relaxed ID and Isolation)
+////////////////////////////////////////////////////////////////////////////////////////////     
+bool samesign2014::isDenominatorLepton(int id, int idx, bool use_el_eta)
+{
+  using namespace tas;
+  // electrons
+  if (abs(id) == 11)
+    {
+      if (cms2.els_p4().at(idx).pt() < 10.0f)
+	return false;
+      
+      if (fabs(cms2.els_p4().at(idx).eta()) > 2.5f)
+	return false;
+      
+      bool isEB = fabs(els_etaSC().at(idx))<1.479;
+      bool passSieie = isEB ? (els_sigmaIEtaIEta().at(idx) < 0.01) :  (els_sigmaIEtaIEta().at(idx) < 0.03);
+      bool passDetain = isEB ? (fabs(els_dEtaIn().at(idx)) < 0.004) : (fabs(els_dEtaIn().at(idx)) < 0.007);
+      bool passDphiin = isEB ? (fabs(els_dPhiIn().at(idx)) < 0.06) : (fabs(els_dPhiIn().at(idx)) < 0.03);
+      bool passHovere = isEB ? (els_hOverE().at(idx) < 0.12) : (els_hOverE().at(idx) < 0.10);
+      float ooemoop = fabs( (1.0/cms2.els_ecalEnergy().at(idx)) - (cms2.els_eOverPIn().at(idx)/cms2.els_ecalEnergy().at(idx)) );
+      bool passOoemoop = isEB ? (fabs(ooemoop) < 0.05) : (fabs(ooemoop) < 0.05);
+      bool passMHits = (els_exp_innerlayers().at(idx) < 2);
+      bool passMITconv = !isFromConversionMIT(idx);
+      int elgsftkid = cms2.els_gsftrkidx().at(idx);
+      int eltkid    = cms2.els_trkidx().at(idx);
+      int ivtx      = firstGoodVertex();
+      float z0 = ivtx >= 0  ? ( elgsftkid>=0 ? gsftrks_dz_pv(elgsftkid,ivtx).first  : ( elgsftkid>=0 ? trks_dz_pv(eltkid,ivtx).first : cms2.els_z0().at(idx))) : -999.;
+      bool passD0_l = true;
+      bool passDZ =  (fabs(z0) < 0.1);
+      float iso = samesign::electronIsolationPF2012(idx);
+      bool passIso_l = (iso < 0.6);
+      bool passes_id = passSieie && passDetain && passDphiin && passHovere && passOoemoop && passMHits && passMITconv && passDZ;
+      bool is_loose = passes_id && passD0_l && passIso_l;
+      if ( !is_loose )
+	return false;
+
+      // passes if we get here
+      return true;
+    }    
+
+    // muons
+    if (abs(id) == 13)
+    {
+      if (cms2.mus_p4().at(idx).pt() < 10.0f)
+	return false;
+      
+      if (fabs(cms2.mus_p4().at(idx).eta()) > 2.4f)
+	return false;
+      
+      bool is_global    = ((mus_type().at(idx) & (1<<1)) != 0);
+      bool is_pfmu      = mus_pid_PFMuon().at(idx);
+      bool passChi2     = (mus_gfit_chi2().at(idx) / mus_gfit_ndof().at(idx) < 10);
+      bool passMuHits   = (mus_gfit_validSTAHits().at(idx) > 0);
+      bool passStations = (mus_numberOfMatchedStations().at(idx) > 1);
+      bool passLayers   = (mus_trkidx().at(idx) >=0 ) ? (trks_nlayers().at(mus_trkidx().at(idx)) > 5) : false;
+      bool passPixel    = (mus_trkidx().at(idx) >=0 ) ? (trks_valid_pixelhits().at(mus_trkidx().at(idx)) > 0) : false;
+      int mutkid = cms2.mus_trkidx().at(idx);
+      int ivtx   = firstGoodVertex();
+      bool passD0_l     =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_d0_pv(mutkid,ivtx).first) < 0.2): false;
+      bool passDZ       =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_dz_pv(mutkid,ivtx).first) < 0.2): false;
+      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 1.);
+      bool passes_id    = is_global && is_pfmu && passChi2 && passMuHits && passStations && passLayers && passPixel && passDZ;
+      bool is_loose     = passes_id && passD0_l && passIso_l;
+      if ( !is_loose )
+	return false;
+
+      return true;
+    }
+    return false; // shouldn't be here!
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2014 denominator hypothesis (relaxed ID and Isolation)
+////////////////////////////////////////////////////////////////////////////////////////////     
+bool samesign2014::isDenominatorHypothesis(int idx, bool use_el_eta)
+{
+    if (!samesign2014::isDenominatorLepton(cms2.hyp_lt_id().at(idx), cms2.hyp_lt_index().at(idx), use_el_eta))
+        return false;
+    if (!samesign2014::isDenominatorLepton(cms2.hyp_ll_id().at(idx), cms2.hyp_ll_index().at(idx), use_el_eta))
+        return false;
+
+    return true;
+}
 
 /////////////////////////////////////////////////////////////////
 ///                                                           ///
