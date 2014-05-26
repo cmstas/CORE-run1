@@ -89,8 +89,9 @@ bool samesign2014::isNumeratorLepton(int id, int idx, bool use_el_eta)
   if (abs(id) == 11)
     {
       bool isEB = fabs(els_etaSC().at(idx))<1.479;
-      float eff_area = fastJetEffArea03_v2(els_etaSC().at(idx)); 
-      float iso = (els_iso03_pf2012ext_ch().at(idx) + max(0.0f, els_iso03_pf2012ext_nh().at(idx) + els_iso03_pf2012ext_em().at(idx) - (max(0.0f, evt_kt6pf_foregiso_rho())*eff_area)))/els_p4().at(idx).pt();
+//      float eff_area = fastJetEffArea03_v2(els_etaSC().at(idx)); 
+//      float iso = (els_iso03_pf2012ext_ch().at(idx) + max(0.0f, els_iso03_pf2012ext_nh().at(idx) + els_iso03_pf2012ext_em().at(idx) - (max(0.0f, evt_ww_rho())*eff_area)))/els_p4().at(idx).pt();
+      float iso = samesign2014::leptonIsolation(11, idx);
       bool passIso_t = (iso < 0.15);
       if ( !isEB && els_p4().at(idx).pt() < 20.0)  passIso_t = (iso < 0.10);
 
@@ -106,7 +107,9 @@ bool samesign2014::isNumeratorLepton(int id, int idx, bool use_el_eta)
     }
   if (abs(id) == 13) 
     {
-      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 0.1);
+      float iso = samesign2014::leptonIsolation(13, idx);
+      //      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 0.1);
+      bool passIso_l    = (iso < 0.1);
       int mutkid = cms2.mus_trkidx().at(idx);
       int ivtx   = firstGoodVertex();
       bool passD0_t  =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_d0_pv(mutkid,ivtx).first) < 0.01): false;
@@ -157,7 +160,7 @@ bool samesign2014::isDenominatorLepton(int id, int idx, bool use_el_eta)
       bool passHovere = isEB ? (els_hOverE().at(idx) < 0.12) : (els_hOverE().at(idx) < 0.10);
       float ooemoop = fabs( (1.0/cms2.els_ecalEnergy().at(idx)) - (cms2.els_eOverPIn().at(idx)/cms2.els_ecalEnergy().at(idx)) );
       bool passOoemoop = isEB ? (fabs(ooemoop) < 0.05) : (fabs(ooemoop) < 0.05);
-      bool passMHits = (els_exp_innerlayers().at(idx) < 2);
+      bool passMHits = (els_exp_innerlayers().at(idx) < 1); //2);
       bool passMITconv = !isFromConversionMIT(idx);
       int elgsftkid = cms2.els_gsftrkidx().at(idx);
       int eltkid    = cms2.els_trkidx().at(idx);
@@ -165,9 +168,12 @@ bool samesign2014::isDenominatorLepton(int id, int idx, bool use_el_eta)
       float z0 = ivtx >= 0  ? ( elgsftkid>=0 ? gsftrks_dz_pv(elgsftkid,ivtx).first  : ( elgsftkid>=0 ? trks_dz_pv(eltkid,ivtx).first : cms2.els_z0().at(idx))) : -999.;
       bool passD0_l = true;
       bool passDZ =  (fabs(z0) < 0.1);
-      float iso = samesign::electronIsolationPF2012(idx);
+      bool passCharge = ! isChargeFlip3agree(idx);
+      //float eff_area = fastJetEffArea03_v2(els_etaSC().at(idx)); 
+      //float iso = (els_iso03_pf2012ext_ch().at(idx) + max(0.0f, els_iso03_pf2012ext_nh().at(idx) + els_iso03_pf2012ext_em().at(idx) - (max(0.0f, evt_ww_rho())*eff_area)))/els_p4().at(idx).pt();
+      float iso = samesign2014::leptonIsolation(11, idx);
       bool passIso_l = (iso < 0.6);
-      bool passes_id = passSieie && passDetain && passDphiin && passHovere && passOoemoop && passMHits && passMITconv && passDZ;
+      bool passes_id = passSieie && passDetain && passDphiin && passHovere && passOoemoop && passMHits && passMITconv && passDZ && passCharge;
       bool is_loose = passes_id && passD0_l && passIso_l;
       if ( !is_loose )
 	return false;
@@ -196,7 +202,9 @@ bool samesign2014::isDenominatorLepton(int id, int idx, bool use_el_eta)
       int ivtx   = firstGoodVertex();
       bool passD0_l     =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_d0_pv(mutkid,ivtx).first) < 0.2): false;
       bool passDZ       =  (ivtx >= 0 && mutkid >= 0) ? (fabs(trks_dz_pv(mutkid,ivtx).first) < 0.2): false;
-      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 1.);
+      float iso = samesign2014::leptonIsolation(13, idx);
+      //      bool passIso_l    = (muonIsoValuePF2012_deltaBeta(idx) < 1.);
+      bool passIso_l    = (iso < 1.);
       bool passes_id    = is_global && is_pfmu && passChi2 && passMuHits && passStations && passLayers && passPixel && passDZ;
       bool is_loose     = passes_id && passD0_l && passIso_l;
       if ( !is_loose )
@@ -218,6 +226,119 @@ bool samesign2014::isDenominatorHypothesis(int idx, bool use_el_eta)
         return false;
 
     return true;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// 2014 highest pT additional lepton for same sign analysis
+///////////////////////////////////////////////////////////////////////////////////////////
+std::pair<int, int> samesign2014::highestPtAdditionalLepton(const int idx, const float min_lep_pt)
+{
+    std::vector<std::pair<int, int> > leps = samesign2014::additionalLeptons(idx, min_lep_pt);
+    if (not leps.empty()) {return leps.front();}
+    return std::make_pair(-999999, -999999);
+}
+
+// 2014 additional selected leptons 
+std::vector<std::pair<int, int> > samesign2014::additionalLeptons(const int hyp_idx, const float min_lep_pt)
+{
+    using namespace tas;
+
+    std::vector<unsigned int> el_indices;
+    std::vector<unsigned int> mu_indices;
+
+    const int lt_id           = hyp_lt_id().at(hyp_idx);
+    const int ll_id           = hyp_ll_id().at(hyp_idx);
+    const unsigned int lt_idx = hyp_lt_index().at(hyp_idx);
+    const unsigned int ll_idx = hyp_ll_index().at(hyp_idx);
+
+    (abs(lt_id) == 11) ? el_indices.push_back(lt_idx) : mu_indices.push_back(lt_idx);
+    (abs(ll_id) == 11) ? el_indices.push_back(ll_idx) : mu_indices.push_back(ll_idx);
+    if (el_indices.size() + mu_indices.size() != 2)
+    {
+        throw std::runtime_error("[samesign2014::highestPtAdditionalLepton] ERROR: don't have 2 leptons in hypothesis!!!");
+    }
+
+    // selected leptons 
+    std::vector<std::pair<int, int> > selected_leps;
+
+    // loop over electrons
+    for (size_t eidx = 0; eidx != els_p4().size(); eidx++)
+    {
+        // skip hyp electrons
+        if (std::find(el_indices.begin(), el_indices.end(), eidx) != el_indices.end()) {continue;}
+
+        // return true if this electron passes the loose lepton selection
+        if (samesign2014::isDenominatorLepton(11, eidx, /*use_el_eta*/ true))
+        {
+            selected_leps.push_back(std::make_pair(-11 * els_charge().at(eidx), eidx));
+        }
+    }
+        
+    // loop over muons
+    for (size_t midx = 0; midx != mus_p4().size(); midx++)
+    {
+        // skip hyp muons
+        if (std::find(mu_indices.begin(), mu_indices.end(), midx) != mu_indices.end()) {continue;}
+
+        // return true if this muons passes the 3rd lepton selection
+        if (samesign2014::isDenominatorLepton(13, midx, /*use_el_eta*/ true))
+        {
+            selected_leps.push_back(std::make_pair(-13 * mus_charge().at(midx), midx));
+        }
+    }
+
+    // sort by pt
+    std::sort(selected_leps.begin(), selected_leps.end(), SortByPt());
+        
+    // if we got here, then we didn't find one
+    return selected_leps;
+}
+////////////////////////////////////////////////////////////////////////////////////////////     
+// 2014 lepton isolation value
+////////////////////////////////////////////////////////////////////////////////////////////     
+double samesign2014::leptonIsolation(int id, int idx)
+{
+    // electrons
+    if (abs(id) == 11)
+    {
+        return samesign2014::electronIsolationPF2012(idx);
+    }
+
+    // muons
+    if (abs(id) == 13)
+    {
+      return muonIsoValuePF2012_deltaBeta(idx);
+    }
+
+    return -999999.0;
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+// calculate PF-based isolation for electrons with rho*Aeff correction
+///////////////////////////////////////////////////////////////////////////////////////////
+float samesign2014::electronIsolationPF2012(int idx)
+{
+    return samesign2014::electronIsolationPF2012_cone03(idx);
+}
+
+float samesign2014::electronIsolationPF2012_cone03(int idx)
+{
+    // electron pT
+    const float pt = cms2.els_p4().at(idx).pt();
+
+    // get effective area
+    const float AEff = fastJetEffArea03_v2(cms2.els_etaSC().at(idx));
+
+    // pf iso
+    const float pfiso_ch = cms2.els_iso03_pf2012ext_ch().at(idx);
+    const float pfiso_em = cms2.els_iso03_pf2012ext_em().at(idx);
+    const float pfiso_nh = cms2.els_iso03_pf2012ext_nh().at(idx);
+
+    // rho
+    const float rhoPrime = std::max(cms2.evt_ww_rho(), 0.0f);
+    const float pfiso_n = std::max(pfiso_em + pfiso_nh - rhoPrime * AEff, 0.0f);
+    const float pfiso = (pfiso_ch + pfiso_n) / pt;
+
+    return pfiso;
 }
 
 /////////////////////////////////////////////////////////////////

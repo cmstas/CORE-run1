@@ -44,7 +44,16 @@ namespace samesign2014
     ////////////////////////////////////////////////////////////////////////////////////////////     
     bool isDenominatorHypothesis(int idx, bool use_el_eta = true);
 
-
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  // 2014 highest pT additional lepton for same sign analysis
+  ///////////////////////////////////////////////////////////////////////////////////////////
+  std::pair<int, int> highestPtAdditionalLepton(const int idx, const float min_lep_pt);
+  std::vector<std::pair<int, int> > additionalLeptons(const int hyp_idx, const float min_lep_pt);
+  
+  double leptonIsolation(int id, int idx);
+  float electronIsolationPF2012(int idx);
+  float electronIsolationPF2012_cone03(int idx);
+  
 }
 
 
